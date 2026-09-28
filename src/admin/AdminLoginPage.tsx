@@ -111,11 +111,13 @@ export const AdminLoginPage: React.FC = () => {
         {/* Top Brand Banner */}
         <div className="p-8 text-center border-b border-slate-800/80 bg-gradient-to-b from-[#001c38] to-[#001428]">
           <div className="inline-flex items-center justify-center mb-4">
-            <img
-              src="/admin-logo.png"
-              alt="Navin Homeo Care Admin Logo"
-              className="w-16 h-16 object-contain rounded-2xl bg-white p-1 shadow-lg ring-4 ring-emerald-500/20"
-            />
+            <div className="w-16 h-16 rounded-full bg-white flex items-center justify-center overflow-hidden shadow-xl ring-4 ring-emerald-500/20 border border-emerald-500/30">
+              <img
+                src="/admin-logo.png"
+                alt="Navin Homeo Care Admin Logo"
+                className="w-full h-full object-contain p-1"
+              />
+            </div>
           </div>
           <h1 className="text-xl font-bold text-white tracking-tight">Navin Homeo Care</h1>
           <p className="text-xs text-emerald-400 font-medium tracking-wide uppercase mt-1">

@@ -322,11 +322,13 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({
         {/* Brand / Clinic Header */}
         <div className="p-6 border-b border-slate-800/80">
           <div className="flex items-center gap-3">
-            <img
-              src="/admin-logo.png"
-              alt="Navin Homeo Care Admin Logo"
-              className="w-11 h-11 object-contain rounded-xl bg-white p-1 shadow-md shrink-0"
-            />
+            <div className="w-11 h-11 rounded-full bg-white flex items-center justify-center overflow-hidden shadow-md shrink-0 border border-emerald-500/20">
+              <img
+                src="/admin-logo.png"
+                alt="Navin Homeo Care Admin Logo"
+                className="w-full h-full object-contain p-0.5"
+              />
+            </div>
             <div>
               <h1 className="text-base font-bold text-white tracking-tight leading-snug">
                 Navin Homeo Care
@@ -416,11 +418,13 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({
       {/* ================= MOBILE HEADER ================= */}
       <header className="lg:hidden bg-[#001428] text-white px-4 py-3 flex items-center justify-between border-b border-slate-800 sticky top-0 z-40">
         <div className="flex items-center gap-2.5">
-          <img
-            src="/admin-logo.png"
-            alt="Navin Homeo Care Admin Logo"
-            className="w-8 h-8 object-contain rounded-lg bg-white p-0.5 shadow-sm shrink-0"
-          />
+          <div className="w-8 h-8 rounded-full bg-white flex items-center justify-center overflow-hidden shadow-sm shrink-0 border border-emerald-500/20">
+            <img
+              src="/admin-logo.png"
+              alt="Navin Homeo Care Admin Logo"
+              className="w-full h-full object-contain p-0.5"
+            />
+          </div>
           <div>
             <span className="text-sm font-bold block leading-none">Navin Homeo Care</span>
             <span className="text-[10px] text-emerald-400 font-medium">Admin Panel</span>
