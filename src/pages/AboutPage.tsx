@@ -42,21 +42,21 @@ export const AboutPage: React.FC = () => {
             {/* Left Doctor Profile Card */}
             <div className="lg:col-span-5 space-y-6">
               <div className="bg-white rounded-3xl border border-slate-200/80 shadow-2xs overflow-hidden">
-                <div className="relative aspect-4/3 sm:aspect-square bg-slate-100 overflow-hidden">
+                <div className="relative aspect-[3/4] bg-slate-100 overflow-hidden">
                   <img
                     src={CLINIC_CONFIG.doctor.image}
                     alt={CLINIC_CONFIG.doctor.name}
-                    className="w-full h-full object-cover object-[center_18%]"
+                    className="w-full h-full object-cover object-center"
                     referrerPolicy="no-referrer"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent"></div>
-                  <div className="absolute bottom-4 left-4 right-4 text-white">
-                    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-emerald-600 text-white mb-2 shadow-2xs">
-                      <Stethoscope className="w-3.5 h-3.5" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent pointer-events-none"></div>
+                  <div className="absolute bottom-3 sm:bottom-4 left-3 sm:left-4 right-3 sm:right-4 text-white">
+                    <span className="inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-0.5 sm:py-1 rounded-full text-[10px] sm:text-xs font-medium bg-emerald-600 text-white mb-1.5 sm:mb-2 shadow-2xs">
+                      <Stethoscope className="w-3 sm:w-3.5 h-3 sm:h-3.5" />
                       Homeopathic Physician
                     </span>
-                    <h2 className="text-2xl font-bold">{CLINIC_CONFIG.doctor.name}</h2>
-                    <p className="text-xs text-slate-200">
+                    <h2 className="text-xl sm:text-2xl font-bold">{CLINIC_CONFIG.doctor.name}</h2>
+                    <p className="text-[11px] sm:text-xs text-slate-200">
                       {CLINIC_CONFIG.name}
                     </p>
                   </div>

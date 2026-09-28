@@ -181,25 +181,25 @@ export const HomePage: React.FC = () => {
             {/* Right: Easily Replaceable Doctor Image Area (No Clutter Badges, Real Clinic Photo) */}
             <div className="lg:col-span-5 relative">
               <div className="relative bg-white p-3 rounded-3xl shadow-sm border border-slate-200/90 overflow-hidden">
-                <div className="relative aspect-4/3 sm:aspect-square w-full rounded-2xl overflow-hidden bg-slate-100">
+                <div className="relative aspect-[3/4] w-full rounded-2xl overflow-hidden bg-slate-100">
                   <img
                     src={CLINIC_CONFIG.images.heroDoctor || CLINIC_CONFIG.images.doctorDesk}
                     alt="Dr. Navin Maurya at Navin Homeo Care, Alambagh, Lucknow"
-                    className="w-full h-full object-cover object-[center_18%]"
+                    className="w-full h-full object-cover object-center"
                     referrerPolicy="no-referrer"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#001428]/80 via-transparent to-transparent" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#001428]/60 via-transparent to-transparent pointer-events-none" />
 
                   {/* Clean, Non-Fictional Doctor Card */}
-                  <div className="absolute bottom-3 left-3 right-3 bg-white/95 backdrop-blur-md p-3.5 rounded-xl shadow-xs border border-white/60 flex items-center justify-between">
+                  <div className="absolute bottom-2.5 sm:bottom-3 left-2.5 sm:left-3 right-2.5 sm:right-3 bg-white/95 backdrop-blur-md p-2.5 sm:p-3.5 rounded-xl shadow-xs border border-white/60 flex items-center justify-between">
                     <div>
-                      <h3 className="text-sm font-bold text-[#001428]">{CLINIC_CONFIG.doctorName}</h3>
-                      <p className="text-[11px] text-[#006e2d] font-semibold">{CLINIC_CONFIG.doctorTitle}</p>
-                      <p className="text-[10px] text-slate-500">Navin Homeo Care &amp; Research Center</p>
+                      <h3 className="text-xs sm:text-sm font-bold text-[#001428] leading-tight">{CLINIC_CONFIG.doctorName}</h3>
+                      <p className="text-[10px] sm:text-[11px] text-[#006e2d] font-semibold">{CLINIC_CONFIG.doctorTitle}</p>
+                      <p className="text-[9px] sm:text-[10px] text-slate-500 line-clamp-1">Navin Homeo Care &amp; Research Center</p>
                     </div>
-                    <div className="text-right">
-                      <span className="text-[10px] font-semibold text-slate-500 uppercase block">Alambagh OPD</span>
-                      <span className="text-xs font-bold text-slate-800">Mon – Sat</span>
+                    <div className="text-right shrink-0 pl-2">
+                      <span className="text-[9px] sm:text-[10px] font-semibold text-slate-500 uppercase block">Alambagh OPD</span>
+                      <span className="text-[11px] sm:text-xs font-bold text-slate-800">Mon – Sat</span>
                     </div>
                   </div>
                 </div>
@@ -287,11 +287,11 @@ export const HomePage: React.FC = () => {
             {/* Doctor Photo & Editable Qualifications */}
             <div className="lg:col-span-5 flex flex-col gap-4">
               <div className="bg-white p-3 rounded-2xl shadow-2xs border border-slate-200/80 overflow-hidden">
-                <div className="rounded-xl overflow-hidden aspect-4/3 bg-slate-100">
+                <div className="rounded-xl overflow-hidden aspect-[3/4] bg-slate-100">
                   <img
                     src={CLINIC_CONFIG.images.aboutDoctor || CLINIC_CONFIG.images.doctorPortraitAlt || CLINIC_CONFIG.images.doctorDesk}
                     alt="Dr. Navin Maurya in consultation cabin"
-                    className="w-full h-full object-cover object-[center_20%]"
+                    className="w-full h-full object-cover object-center"
                     referrerPolicy="no-referrer"
                   />
                 </div>
