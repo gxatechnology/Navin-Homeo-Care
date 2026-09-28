@@ -83,12 +83,27 @@ export const AdminDashboardPage: React.FC = () => {
 
   useEffect(() => {
     loadData();
+
+    const handleUpdate = () => {
+      setAppointments(adminDataService.getAppointments());
+    };
+    window.addEventListener('nhc_appointments_updated', handleUpdate);
+    window.addEventListener('storage', handleUpdate);
+
+    return () => {
+      window.removeEventListener('nhc_appointments_updated', handleUpdate);
+      window.removeEventListener('storage', handleUpdate);
+    };
   }, []);
 
   const loadData = () => {
     setAppointments(adminDataService.getAppointments());
     setOrders(adminDataService.getOrders());
     setProducts(adminDataService.getProducts());
+
+    adminDataService.fetchAppointmentsFromApi().then((fresh) => {
+      if (fresh) setAppointments(fresh);
+    });
   };
 
   const todayStr = useMemo(() => new Date().toISOString().split('T')[0], []);

@@ -45,18 +45,61 @@ export const AdminAppointmentsPage: React.FC<{ initialSelectedId?: string }> = (
   const [newNoteText, setNewNoteText] = useState('');
   const [noteAuthor, setNoteAuthor] = useState('Admin Desk');
   const [confirmCancelTarget, setConfirmCancelTarget] = useState<string | null>(null);
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
-  const reloadData = () => {
+  const reloadData = async (showSpinner: boolean = false) => {
+    if (showSpinner) setIsRefreshing(true);
+    // 1. Immediate local render for instant UI
     const list = adminDataService.getAppointments();
     setAppointments(list);
     if (initialSelectedId) {
       const match = list.find((a) => a.bookingReference === initialSelectedId);
       if (match) setSelectedAppointment(match);
     }
+
+    // 2. Fetch fresh records from shared API/backend
+    try {
+      const fresh = await adminDataService.fetchAppointmentsFromApi();
+      if (fresh && fresh.length > 0) {
+        setAppointments(fresh);
+        if (initialSelectedId) {
+          const match = fresh.find((a) => a.bookingReference === initialSelectedId);
+          if (match) setSelectedAppointment(match);
+        }
+      }
+    } catch (err) {
+      console.warn('Live appointment refresh error:', err);
+    } finally {
+      if (showSpinner) {
+        setTimeout(() => setIsRefreshing(false), 400);
+      }
+    }
   };
 
   useEffect(() => {
     reloadData();
+
+    // Listen for local/tab synchronization events
+    const handleUpdate = () => {
+      const list = adminDataService.getAppointments();
+      setAppointments(list);
+    };
+
+    window.addEventListener('nhc_appointments_updated', handleUpdate);
+    window.addEventListener('storage', handleUpdate);
+
+    // Periodic live polling (every 10 seconds) for new patient bookings
+    const interval = setInterval(() => {
+      adminDataService.fetchAppointmentsFromApi().then((fresh) => {
+        if (fresh) setAppointments(fresh);
+      });
+    }, 10000);
+
+    return () => {
+      window.removeEventListener('nhc_appointments_updated', handleUpdate);
+      window.removeEventListener('storage', handleUpdate);
+      clearInterval(interval);
+    };
   }, [initialSelectedId]);
 
   // Today string
@@ -282,6 +325,16 @@ export const AdminAppointmentsPage: React.FC<{ initialSelectedId?: string }> = (
                   {f.label}
                 </button>
               ))}
+
+              <button
+                onClick={() => reloadData(true)}
+                disabled={isRefreshing}
+                title="Refresh Live Appointments"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg font-medium text-xs bg-emerald-50 text-emerald-800 border border-emerald-200 hover:bg-emerald-100 transition-colors cursor-pointer disabled:opacity-50"
+              >
+                <RefreshCw className={`w-3.5 h-3.5 ${isRefreshing ? 'animate-spin text-emerald-600' : ''}`} />
+                <span>{isRefreshing ? 'Syncing...' : 'Refresh'}</span>
+              </button>
             </div>
           </div>
 

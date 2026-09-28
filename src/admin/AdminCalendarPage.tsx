@@ -61,10 +61,24 @@ export const AdminCalendarPage: React.FC = () => {
 
   useEffect(() => {
     loadAppointments();
+
+    const handleUpdate = () => {
+      setAppointments(adminDataService.getAppointments());
+    };
+    window.addEventListener('nhc_appointments_updated', handleUpdate);
+    window.addEventListener('storage', handleUpdate);
+
+    return () => {
+      window.removeEventListener('nhc_appointments_updated', handleUpdate);
+      window.removeEventListener('storage', handleUpdate);
+    };
   }, []);
 
   const loadAppointments = () => {
     setAppointments(adminDataService.getAppointments());
+    adminDataService.fetchAppointmentsFromApi().then((fresh) => {
+      if (fresh) setAppointments(fresh);
+    });
   };
 
   // Helper date navigation

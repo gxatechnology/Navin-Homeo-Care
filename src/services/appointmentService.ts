@@ -1,3 +1,5 @@
+import { adminDataService, AdminAppointment } from './adminDataService';
+
 export interface AppointmentBookingPayload {
   fullName: string;
   phone: string;
@@ -9,6 +11,7 @@ export interface AppointmentBookingPayload {
   healthConcern: string;
   symptomsNote?: string;
   consentAgreed: boolean;
+  appointmentType?: string;
 }
 
 export interface QuickEnquiryPayload {
@@ -25,15 +28,11 @@ export interface SubmissionResponse {
   timestamp: string;
 }
 
-const STORAGE_KEY_APPOINTMENTS = 'navin_homeo_appointments';
 const STORAGE_KEY_ENQUIRIES = 'navin_homeo_enquiries';
 
 export async function submitAppointmentRequest(
   payload: AppointmentBookingPayload
 ): Promise<SubmissionResponse> {
-  // Simulate network request latency (500ms)
-  await new Promise((resolve) => setTimeout(resolve, 600));
-
   // Client-side validation checks
   if (!payload.fullName || payload.fullName.trim().length < 2) {
     throw new Error('Please enter your full name (at least 2 characters).');
@@ -58,21 +57,39 @@ export async function submitAppointmentRequest(
 
   // Generate reference ID
   const refId = `NHC-${Math.floor(100000 + Math.random() * 900000)}`;
-  const record = {
-    ...payload,
+  const record: AdminAppointment = {
     bookingReference: refId,
+    fullName: payload.fullName.trim(),
+    phone: payload.phone.trim(),
+    email: payload.email?.trim() || '',
+    age: payload.age || '',
+    patientType: payload.patientType || 'new',
+    preferredDate: payload.preferredDate,
+    preferredTime: payload.preferredTime,
+    healthConcern: payload.healthConcern || 'General Consultation',
+    symptomsNote: payload.symptomsNote?.trim() || '',
     timestamp: new Date().toISOString(),
-    status: 'received',
+    status: 'requested',
+    source: 'Website',
+    appointmentType: payload.appointmentType || 'In-Clinic OPD',
+    internalNotes: [],
   };
 
-  // Persist locally so clinic receptionist / user can inspect past requests
+  // 1. Immediately record in local storage data store
+  adminDataService.recordPublicAppointment(record);
+
+  // 2. Submit to shared persistent backend API
   try {
-    const existingStr = localStorage.getItem(STORAGE_KEY_APPOINTMENTS);
-    const existing = existingStr ? JSON.parse(existingStr) : [];
-    existing.unshift(record);
-    localStorage.setItem(STORAGE_KEY_APPOINTMENTS, JSON.stringify(existing.slice(0, 50)));
+    const res = await fetch('/api/appointments', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(record),
+    });
+    if (!res.ok) {
+      console.warn('Backend API returned non-200 status:', res.status);
+    }
   } catch (err) {
-    console.warn('LocalStorage save failed:', err);
+    console.warn('Network request to /api/appointments failed (persisted locally):', err);
   }
 
   return {

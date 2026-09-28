@@ -66,6 +66,7 @@ export interface AdminAppointment {
   internalNotes: InternalAppointmentNote[];
   rescheduledFrom?: string;
   source?: AppointmentSource;
+  appointmentType?: string;
 }
 
 export interface AdminEnquiry {
@@ -516,19 +517,76 @@ export const adminDataService = {
         internalNotes: Array.isArray(item.internalNotes) ? item.internalNotes : [],
         rescheduledFrom: item.rescheduledFrom,
         source: item.source || 'Website',
+        appointmentType: item.appointmentType || 'In-Clinic OPD',
       }));
     } catch {
       return INITIAL_APPOINTMENTS;
     }
   },
 
+  async fetchAppointmentsFromApi(): Promise<AdminAppointment[]> {
+    if (typeof window === 'undefined') return this.getAppointments();
+    try {
+      const res = await fetch('/api/appointments');
+      if (res.ok) {
+        const data = await res.json();
+        if (data.success && Array.isArray(data.appointments)) {
+          const formatted: AdminAppointment[] = data.appointments.map((item: any) => ({
+            bookingReference: item.bookingReference || `NHC-${Math.floor(100000 + Math.random() * 900000)}`,
+            fullName: item.fullName || 'Unnamed Patient',
+            phone: item.phone || '',
+            email: item.email || '',
+            age: item.age || '',
+            patientType: item.patientType || 'new',
+            preferredDate: item.preferredDate || new Date().toISOString().split('T')[0],
+            preferredTime: item.preferredTime || '10:00 AM - 11:00 AM',
+            healthConcern: item.healthConcern || 'General Health Concern',
+            symptomsNote: item.symptomsNote || '',
+            timestamp: item.timestamp || new Date().toISOString(),
+            status: (item.status === 'received' ? 'requested' : item.status) || 'requested',
+            internalNotes: Array.isArray(item.internalNotes) ? item.internalNotes : [],
+            rescheduledFrom: item.rescheduledFrom,
+            source: item.source || 'Website',
+            appointmentType: item.appointmentType || 'In-Clinic OPD',
+          }));
+
+          // Save to local cache
+          localStorage.setItem(DB_KEYS.APPOINTMENTS, JSON.stringify(formatted));
+          window.dispatchEvent(new CustomEvent('nhc_appointments_updated', { detail: formatted }));
+          return formatted;
+        }
+      }
+    } catch (err) {
+      console.warn('Could not fetch appointments from /api/appointments:', err);
+    }
+    return this.getAppointments();
+  },
+
   saveAppointments(appointments: AdminAppointment[]): void {
     if (typeof window === 'undefined') return;
     try {
       localStorage.setItem(DB_KEYS.APPOINTMENTS, JSON.stringify(appointments));
+      window.dispatchEvent(new CustomEvent('nhc_appointments_updated', { detail: appointments }));
     } catch (err) {
       console.error('Failed to save appointments:', err);
     }
+  },
+
+  recordPublicAppointment(appt: AdminAppointment): void {
+    const list = this.getAppointments();
+    const existingIdx = list.findIndex((a) => a.bookingReference === appt.bookingReference);
+    if (existingIdx === -1) {
+      list.unshift(appt);
+      this.saveAppointments(list);
+    }
+
+    this.addNotification({
+      type: 'new_appointment',
+      title: 'New Online Appointment Booking',
+      message: `${appt.fullName} booked an appointment for ${appt.preferredDate} (${appt.preferredTime}) - Ref: ${appt.bookingReference}.`,
+      targetPath: '/admin/appointments',
+      relatedId: appt.bookingReference,
+    });
   },
 
   createAppointment(payload: Partial<AdminAppointment>): AdminAppointment {
@@ -548,6 +606,7 @@ export const adminDataService = {
       timestamp: new Date().toISOString(),
       status: payload.status || 'confirmed',
       source: payload.source || 'Admin Entry',
+      appointmentType: payload.appointmentType || 'In-Clinic OPD',
       internalNotes: payload.internalNotes || (payload.symptomsNote ? [{
         id: 'note_' + Date.now(),
         author: 'Admin Desk',
@@ -558,6 +617,13 @@ export const adminDataService = {
 
     list.unshift(newAppt);
     this.saveAppointments(list);
+
+    // Sync to API asynchronously
+    fetch('/api/appointments', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(newAppt),
+    }).catch((err) => console.warn('API sync failed:', err));
 
     this.addNotification({
       type: 'new_appointment',
@@ -581,6 +647,13 @@ export const adminDataService = {
     const oldStatus = list[index].status;
     list[index].status = status;
     this.saveAppointments(list);
+
+    // Sync to API asynchronously
+    fetch('/api/appointments', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ bookingReference: bookingRef, status }),
+    }).catch((err) => console.warn('API sync failed:', err));
 
     if (status === 'cancelled') {
       this.addNotification({
@@ -617,6 +690,13 @@ export const adminDataService = {
     });
     this.saveAppointments(list);
 
+    // Sync to API asynchronously
+    fetch('/api/appointments', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ bookingReference: bookingRef, newDate, newTime }),
+    }).catch((err) => console.warn('API sync failed:', err));
+
     auditLogService.log(
       'Appointment Rescheduled',
       `Appointment ${bookingRef} rescheduled to ${newDate} (${newTime})`
@@ -636,6 +716,13 @@ export const adminDataService = {
     };
     list[index].internalNotes.push(note);
     this.saveAppointments(list);
+
+    // Sync to API asynchronously
+    fetch('/api/appointments', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ bookingReference: bookingRef, noteText, author }),
+    }).catch((err) => console.warn('API sync failed:', err));
 
     auditLogService.log(
       'Internal Note Added',

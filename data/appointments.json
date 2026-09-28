@@ -1,0 +1,132 @@
+[
+  {
+    "bookingReference": "NHC-829104",
+    "fullName": "Rajesh Srivastava",
+    "phone": "09415012345",
+    "email": "rajesh.sri@example.com",
+    "age": "46",
+    "patientType": "existing",
+    "preferredDate": "2026-09-28",
+    "preferredTime": "10:30 AM - 11:30 AM",
+    "healthConcern": "Joint & Back Pain (Cervical Spondylosis)",
+    "symptomsNote": "Recurring neck stiffness after laptop work and morning stiffness in knee joints.",
+    "timestamp": "2026-09-28T14:30:00.000Z",
+    "status": "confirmed",
+    "source": "Website",
+    "internalNotes": [
+      {
+        "id": "n1",
+        "author": "Admin Desk",
+        "text": "Follow-up consultation. Token 3 allocated for morning OPD.",
+        "createdAt": "2026-09-28T15:00:00.000Z"
+      }
+    ]
+  },
+  {
+    "bookingReference": "NHC-910283",
+    "fullName": "Pooja Verma",
+    "phone": "09839067890",
+    "email": "pooja.verma@example.com",
+    "age": "29",
+    "patientType": "new",
+    "preferredDate": "2026-09-28",
+    "preferredTime": "06:00 PM - 07:00 PM",
+    "healthConcern": "Skin & Hair Problems (Chronic Eczema)",
+    "symptomsNote": "Dry itchy patches on forearms aggravated during season changes.",
+    "timestamp": "2026-09-28T12:00:00.000Z",
+    "status": "requested",
+    "source": "Website",
+    "internalNotes": [
+      {
+        "id": "n2",
+        "author": "Admin Desk",
+        "text": "New patient requested evening consultation. Called once, requested callback after 4 PM.",
+        "createdAt": "2026-09-28T13:00:00.000Z"
+      }
+    ]
+  },
+  {
+    "bookingReference": "NHC-746291",
+    "fullName": "Mohd. Imran",
+    "phone": "08765432109",
+    "email": "imran.m@example.com",
+    "age": "38",
+    "patientType": "new",
+    "preferredDate": "2026-09-29",
+    "preferredTime": "11:30 AM - 12:30 PM",
+    "healthConcern": "Allergy & Breathing Concerns (Sinusitis)",
+    "symptomsNote": "Continuous morning sneezing, dust sensitivity and recurrent frontal headache.",
+    "timestamp": "2026-09-27T10:00:00.000Z",
+    "status": "confirmed",
+    "source": "Website",
+    "internalNotes": [
+      {
+        "id": "n3",
+        "author": "Dr. Navin Desk",
+        "text": "Advised to bring previous sinus X-rays and allergy reports.",
+        "createdAt": "2026-09-27T11:00:00.000Z"
+      }
+    ]
+  },
+  {
+    "bookingReference": "NHC-635190",
+    "fullName": "Sunita Sharma",
+    "phone": "09335198765",
+    "email": "sunita.sharma@example.com",
+    "age": "34",
+    "patientType": "existing",
+    "preferredDate": "2026-09-26",
+    "preferredTime": "07:00 PM - 08:00 PM",
+    "healthConcern": "Digestive Problems (GERD & Acidity)",
+    "symptomsNote": "Chronic hyperacidity and post-meal bloating.",
+    "timestamp": "2026-09-25T16:00:00.000Z",
+    "status": "completed",
+    "source": "Website",
+    "internalNotes": [
+      {
+        "id": "n4",
+        "author": "Dr. Navin Desk",
+        "text": "Consultation completed. Advised lifestyle guidance and follow-up.",
+        "createdAt": "2026-09-26T19:30:00.000Z"
+      }
+    ]
+  },
+  {
+    "bookingReference": "NHC-528419",
+    "fullName": "Ananya Gupta",
+    "phone": "09123456780",
+    "email": "ananya.g@example.com",
+    "age": "24",
+    "patientType": "new",
+    "preferredDate": "2026-09-30",
+    "preferredTime": "05:00 PM - 06:00 PM",
+    "healthConcern": "Women’s Health (PCOS Consultation)",
+    "symptomsNote": "Irregular cycles and hormonal concerns.",
+    "timestamp": "2026-09-27T18:00:00.000Z",
+    "status": "requested",
+    "source": "Website",
+    "internalNotes": []
+  },
+  {
+    "bookingReference": "NHC-419827",
+    "fullName": "Devendra Pandey",
+    "phone": "09988776655",
+    "age": "58",
+    "patientType": "existing",
+    "preferredDate": "2026-09-24",
+    "preferredTime": "10:00 AM - 11:00 AM",
+    "healthConcern": "Joint & Back Pain (Sciatica)",
+    "symptomsNote": "Radiating pain from lower spine down the right leg.",
+    "timestamp": "2026-09-23T09:00:00.000Z",
+    "status": "no_show",
+    "source": "Website",
+    "internalNotes": [
+      {
+        "id": "n5",
+        "author": "Admin Desk",
+        "text": "Patient did not arrive. Out of station, will rebook next week.",
+        "createdAt": "2026-09-24T12:00:00.000Z"
+      }
+    ]
+  }
+]
