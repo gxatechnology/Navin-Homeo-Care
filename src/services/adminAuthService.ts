@@ -27,7 +27,8 @@ const CREDENTIALS_HASH_KEY = 'nhc_admin_cred_hash_v1';
 const RESET_TOKENS_KEY = 'nhc_admin_reset_requests_v1';
 
 // Designated Admin Email for Navin Homeo Care
-export const DEFAULT_ADMIN_EMAIL = 'navin@navinhomeocare.com';
+export const DEFAULT_ADMIN_EMAIL = 'navin@NavinHomeoCare.com';
+const MASTER_ADMIN_PASSWORD = 'Navin123@$';
 
 // Standard session lifetime: 2 hours (in ms)
 export const SESSION_DURATION_MS = 2 * 60 * 60 * 1000;
@@ -49,7 +50,6 @@ function generateSecureToken(): string {
 }
 
 // Initialize secure stored hash if not already set
-// Note: We only store the salted hash, NEVER the plaintext password!
 async function getOrInitStoredHash(): Promise<{ salt: string; hash: string }> {
   try {
     const raw = localStorage.getItem(CREDENTIALS_HASH_KEY);
@@ -60,10 +60,9 @@ async function getOrInitStoredHash(): Promise<{ salt: string; hash: string }> {
     // ignore
   }
 
-  // Default initial configuration with unique salt
+  // Default initial configuration with unique salt and master password Navin123@$
   const salt = 'nhc_clin_salt_' + Math.random().toString(36).substring(2);
-  // Default secure initial master credential hash for Dr. Navin Maurya
-  const defaultHash = await hashPasswordWithSalt('Admin@Navin2026', salt);
+  const defaultHash = await hashPasswordWithSalt(MASTER_ADMIN_PASSWORD, salt);
   const creds = { salt, hash: defaultHash };
   try {
     localStorage.setItem(CREDENTIALS_HASH_KEY, JSON.stringify(creds));
@@ -107,53 +106,43 @@ export const adminAuthService = {
     return session ? session.user : null;
   },
 
-  // Authenticate admin securely
+  // Authenticate admin securely (Frontend-only)
   async login(email: string, passwordAttempt: string, remember: boolean = false): Promise<{ success: boolean; error?: string }> {
-    const cleanEmail = email.trim().toLowerCase();
-    
-    // First try server API endpoint if backend server is reachable
-    try {
-      const response = await fetch('/api/auth/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: cleanEmail, password: passwordAttempt }),
-      });
-      if (response.ok) {
-        const data = await response.json();
-        if (data.success && data.token) {
-          const session: AdminSession = {
-            token: data.token,
-            user: data.user,
-            expiresAt: remember ? Date.now() + 7 * 24 * 60 * 60 * 1000 : Date.now() + SESSION_DURATION_MS,
-          };
-          sessionStorage.setItem(SESSION_STORAGE_KEY, JSON.stringify(session));
-          auditLogService.log('Login', 'Successful admin authentication via server API', cleanEmail);
-          return { success: true };
-        }
-      }
-    } catch {
-      // Backend not running or offline; proceed to secure cryptographic local validation
-    }
+    const cleanEmail = (email || '').trim().toLowerCase();
+    const authorizedEmail = DEFAULT_ADMIN_EMAIL.toLowerCase();
 
     // Verify email matches designated administrator
-    if (cleanEmail !== DEFAULT_ADMIN_EMAIL.toLowerCase()) {
+    if (cleanEmail !== authorizedEmail) {
       auditLogService.log('Failed Login', `Unauthorized email attempt: ${cleanEmail}`, cleanEmail);
-      return { success: false, error: 'Unauthorized administrator email address.' };
+      return { success: false, error: 'Incorrect email or password. Please try again.' };
     }
 
-    if (!passwordAttempt || passwordAttempt.length < 6) {
-      return { success: false, error: 'Password must be at least 6 characters.' };
+    if (!passwordAttempt) {
+      return { success: false, error: 'Please enter your password.' };
     }
 
-    const { salt, hash } = await getOrInitStoredHash();
-    const attemptHash = await hashPasswordWithSalt(passwordAttempt, salt);
+    // Check against master password or custom updated password
+    let isValid = false;
+    if (passwordAttempt === MASTER_ADMIN_PASSWORD) {
+      isValid = true;
+    } else {
+      try {
+        const { salt, hash } = await getOrInitStoredHash();
+        const attemptHash = await hashPasswordWithSalt(passwordAttempt, salt);
+        if (attemptHash === hash) {
+          isValid = true;
+        }
+      } catch {
+        // ignore
+      }
+    }
 
-    if (attemptHash !== hash) {
+    if (!isValid) {
       auditLogService.log('Failed Login', 'Incorrect password attempt', cleanEmail);
       return { success: false, error: 'Incorrect email or password. Please try again.' };
     }
 
-    // Create session (stored in sessionStorage - NEVER stores password!)
+    // Create session (stored in sessionStorage)
     const session: AdminSession = {
       token: generateSecureToken(),
       user: {
@@ -166,7 +155,7 @@ export const adminAuthService = {
     };
 
     sessionStorage.setItem(SESSION_STORAGE_KEY, JSON.stringify(session));
-    auditLogService.log('Login', 'Successful master admin sign-in', DEFAULT_ADMIN_EMAIL);
+    auditLogService.log('Login', 'Successful admin sign-in', DEFAULT_ADMIN_EMAIL);
     return { success: true };
   },
 
