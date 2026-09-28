@@ -322,11 +322,11 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({
         {/* Brand / Clinic Header */}
         <div className="p-6 border-b border-slate-800/80">
           <div className="flex items-center gap-3">
-            <div className="w-11 h-11 rounded-full bg-white flex items-center justify-center overflow-hidden shadow-md shrink-0 border border-emerald-500/20">
+            <div className="w-11 h-11 rounded-full overflow-hidden shrink-0 flex items-center justify-center">
               <img
                 src="/admin-logo.png"
                 alt="Navin Homeo Care Admin Logo"
-                className="w-full h-full object-contain p-0.5"
+                className="w-full h-full object-contain"
               />
             </div>
             <div>
@@ -418,11 +418,11 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({
       {/* ================= MOBILE HEADER ================= */}
       <header className="lg:hidden bg-[#001428] text-white px-4 py-3 flex items-center justify-between border-b border-slate-800 sticky top-0 z-40">
         <div className="flex items-center gap-2.5">
-          <div className="w-8 h-8 rounded-full bg-white flex items-center justify-center overflow-hidden shadow-sm shrink-0 border border-emerald-500/20">
+          <div className="w-8 h-8 rounded-full overflow-hidden shrink-0 flex items-center justify-center">
             <img
               src="/admin-logo.png"
               alt="Navin Homeo Care Admin Logo"
-              className="w-full h-full object-contain p-0.5"
+              className="w-full h-full object-contain"
             />
           </div>
           <div>
