@@ -463,14 +463,14 @@ const INITIAL_INVENTORY_LOGS: InventoryLogEntry[] = [
 
 // Default Clinic & Website Settings conforming to Section 11
 const DEFAULT_SETTINGS: ClinicSettings = {
-  clinicName: 'Navin Homeo Care & Research Center',
+  clinicName: 'Navin Homeo Care',
   doctorName: 'Dr. Navin Maurya',
   phone: '073183 06699',
   whatsapp: '917318306699',
   email: 'navin@navinhomeocare.com',
   address: 'Shop No. 4, Ground Floor, Near Phoenix United Mall, Kanpur Road, Alambagh, Lucknow - 226005',
   googleMapsLink: 'https://maps.google.com/?q=Navin+Homeo+Care+Alambagh+Lucknow',
-  clinicTimings: 'Mon-Sat: 10:00 AM - 01:30 PM & 05:30 PM - 08:30 PM | Sun: 10:30 AM - 01:30 PM',
+  clinicTimings: 'Mon-Thu: 10:00 AM - 01:30 PM & 05:30 PM - 08:30 PM | Fri-Sat: Closed | Sun: 10:00 AM - 02:00 PM',
 
   appointmentAvailability: true,
   consultationTimings: 'Morning OPD: 10:00 AM - 01:30 PM | Evening OPD: 05:30 PM - 08:30 PM',

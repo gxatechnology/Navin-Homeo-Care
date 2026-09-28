@@ -27,12 +27,12 @@ export const ShippingPolicyPage: React.FC = () => {
 
         <div className="prose prose-slate max-w-none text-xs sm:text-sm text-slate-600 space-y-5 leading-relaxed">
           <p>
-            At <strong className="text-slate-900">Navin Homeo Care &amp; Research Center</strong>, products ordered through our online shop are dispatched securely from our clinic shop in Alambagh, Lucknow.
+            At <strong className="text-slate-900">Navin Homeo Care</strong>, products ordered through our online shop are dispatched securely from our clinic shop in Alambagh, Lucknow.
           </p>
 
           <h2 className="text-base font-bold text-slate-900 pt-2">1. Processing &amp; Dispatch Timeline</h2>
           <p>
-            Orders are reviewed and prepared within 24 to 48 business hours of order placement (excluding Sundays and clinic holidays). You will receive telephone or WhatsApp confirmation before dispatch.
+            Orders are reviewed and prepared within 24 to 48 business hours of order placement (excluding clinic holidays and off days). You will receive telephone or WhatsApp confirmation before dispatch.
           </p>
 
           <h2 className="text-base font-bold text-slate-900 pt-2">2. Local &amp; Regional Delivery Areas</h2>
@@ -112,7 +112,7 @@ export const RefundPolicyPage: React.FC = () => {
           </p>
 
           <div className="pt-6 border-t border-slate-100 text-xs text-slate-500">
-            Shop &amp; Support Desk: {CLINIC_CONFIG.phone} &bull; Navin Homeo Care &amp; Research Center, Alambagh, Lucknow.
+            Shop &amp; Support Desk: {CLINIC_CONFIG.phone} &bull; Navin Homeo Care, Alambagh, Lucknow.
           </div>
         </div>
       </div>

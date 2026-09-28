@@ -25,7 +25,7 @@ export const ReviewsPage: React.FC = () => {
             Patient Feedback &amp; Ratings
           </h1>
           <p className="text-base sm:text-lg text-slate-300 max-w-2xl leading-relaxed">
-            Verified patient ratings for Dr. Navin Maurya and Navin Homeo Care &amp; Research Center in Alambagh, Lucknow.
+            Verified patient ratings for Dr. Navin Maurya and Navin Homeo Care in Alambagh, Lucknow.
           </p>
         </div>
       </section>
@@ -124,7 +124,7 @@ export const ReviewsPage: React.FC = () => {
               <span className="text-xs font-bold uppercase tracking-wider text-emerald-400">Personalized Care</span>
               <h3 className="text-xl sm:text-2xl font-bold mt-1">Ready for Your Individual Consultation?</h3>
               <p className="text-slate-300 text-xs sm:text-sm mt-1">
-                Consult Dr. Navin Maurya at Navin Homeo Care &amp; Research Center in Alambagh, Lucknow.
+                Consult Dr. Navin Maurya at Navin Homeo Care in Alambagh, Lucknow.
               </p>
             </div>
             <Link

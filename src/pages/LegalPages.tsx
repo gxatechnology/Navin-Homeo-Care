@@ -40,7 +40,7 @@ export const MedicalDisclaimerPage: React.FC = () => {
             Homeopathic therapy focuses on treating the patient as an individual entity rather than solely suppressing isolated diagnostic labels. Responses to remedies vary widely depending on personal constitution, chronicity of disease, underlying pathology, lifestyle choices, and hereditary tendencies.
           </p>
           <p className="font-semibold text-slate-900">
-            Navin Homeo Care &amp; Research Center and Dr. Navin Maurya make NO claims of "guaranteed cures," "100% permanent relief," or instant outcomes. Ethical medicine acknowledges that therapeutic response is unique to each individual.
+            Navin Homeo Care and Dr. Navin Maurya make NO claims of "guaranteed cures," "100% permanent relief," or instant outcomes. Ethical medicine acknowledges that therapeutic response is unique to each individual.
           </p>
 
           <h2 className="text-lg font-bold text-slate-900 pt-2">3. Ongoing Conventional Medications</h2>
@@ -54,7 +54,7 @@ export const MedicalDisclaimerPage: React.FC = () => {
           </p>
 
           <div className="pt-6 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500">
-            <span>Last reviewed: September 2026 &bull; Navin Homeo Care &amp; Research Center</span>
+            <span>Last reviewed: September 2026 &bull; Navin Homeo Care</span>
             <a href={`tel:${CLINIC_CONFIG.phoneRaw}`} className="font-semibold text-blue-700 hover:underline">
               Contact Reception: {CLINIC_CONFIG.phone}
             </a>
@@ -89,7 +89,7 @@ export const PrivacyPolicyPage: React.FC = () => {
 
         <div className="prose prose-slate max-w-none text-sm sm:text-base text-slate-600 space-y-5 leading-relaxed">
           <p>
-            At <span className="font-semibold text-slate-900">Navin Homeo Care &amp; Research Center</span>, we treat patient confidentiality with utmost clinical gravity. This Privacy Policy details how your personal contact details and health enquiry information are handled.
+            At <span className="font-semibold text-slate-900">Navin Homeo Care</span>, we treat patient confidentiality with utmost clinical gravity. This Privacy Policy details how your personal contact details and health enquiry information are handled.
           </p>
 
           <h2 className="text-lg font-bold text-slate-900 pt-2">1. Information We Collect</h2>
@@ -155,7 +155,7 @@ export const TermsPage: React.FC = () => {
 
         <div className="prose prose-slate max-w-none text-sm sm:text-base text-slate-600 space-y-5 leading-relaxed">
           <p>
-            Welcome to the official web portal of <span className="font-semibold text-slate-900">Navin Homeo Care &amp; Research Center</span>. By browsing this website or scheduling an appointment through our portal, you acknowledge and agree to the terms outlined below.
+            Welcome to the official web portal of <span className="font-semibold text-slate-900">Navin Homeo Care</span>. By browsing this website or scheduling an appointment through our portal, you acknowledge and agree to the terms outlined below.
           </p>
 
           <h2 className="text-lg font-bold text-slate-900 pt-2">1. Consultation Scheduling</h2>
@@ -170,7 +170,7 @@ export const TermsPage: React.FC = () => {
 
           <h2 className="text-lg font-bold text-slate-900 pt-2">3. Intellectual Property</h2>
           <p>
-            All clinic imagery, photography of the premises, logos, and medical editorial content published on this site belong to Navin Homeo Care &amp; Research Center and Dr. Navin Maurya. Unauthorized copying or redistribution is prohibited.
+            All clinic imagery, photography of the premises, logos, and medical editorial content published on this site belong to Navin Homeo Care and Dr. Navin Maurya. Unauthorized copying or redistribution is prohibited.
           </p>
 
           <div className="pt-6 border-t border-slate-100 text-xs text-slate-500">

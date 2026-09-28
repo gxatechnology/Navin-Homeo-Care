@@ -64,7 +64,7 @@ export const AdminEnquiriesPage: React.FC = () => {
 
   const getWhatsAppLink = (enq: AdminEnquiry) => {
     const cleanPhone = enq.phone.replace(/\D/g, '').slice(-10);
-    const message = `Namaste ${enq.name}, this is Navin Homeo Care & Research Center following up on your consultation enquiry regarding "${enq.concern}". Dr. Navin Maurya's clinical desk is here to assist.`;
+    const message = `Namaste ${enq.name}, this is Navin Homeo Care following up on your consultation enquiry regarding "${enq.concern}". Dr. Navin Maurya's clinical desk is here to assist.`;
     return `https://wa.me/91${cleanPhone}?text=${encodeURIComponent(message)}`;
   };
 

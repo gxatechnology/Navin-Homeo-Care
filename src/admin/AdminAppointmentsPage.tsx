@@ -181,7 +181,7 @@ export const AdminAppointmentsPage: React.FC<{ initialSelectedId?: string }> = (
   // WhatsApp Link generator
   const getWhatsAppLink = (appt: AdminAppointment) => {
     const cleanPhone = appt.phone.replace(/\D/g, '').slice(-10);
-    const message = `Namaste ${appt.fullName}, this is Navin Homeo Care & Research Center regarding your appointment request (Ref: ${appt.bookingReference}) with Dr. Navin Maurya on ${appt.preferredDate} (${appt.preferredTime}). Please let us know if you have any questions.`;
+    const message = `Namaste ${appt.fullName}, this is Navin Homeo Care regarding your appointment request (Ref: ${appt.bookingReference}) with Dr. Navin Maurya on ${appt.preferredDate} (${appt.preferredTime}). Please let us know if you have any questions.`;
     return `https://wa.me/91${cleanPhone}?text=${encodeURIComponent(message)}`;
   };
 

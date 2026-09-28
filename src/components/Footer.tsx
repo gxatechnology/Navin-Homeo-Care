@@ -22,17 +22,13 @@ export const Footer: React.FC = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 lg:gap-12 pb-12 border-b border-slate-800">
           {/* COLUMN 1: Logo & Clinic Description */}
           <div className="flex flex-col gap-4">
-            <Link to="/" className="flex items-center gap-3 group">
-              <div className="shrink-0 flex items-center justify-center p-1 rounded-xl bg-slate-900 border border-slate-800 shadow-sm group-hover:scale-105 transition-transform">
-                <ClinicLogoSymbol className="h-11 w-11 object-contain" />
-              </div>
-              <div className="flex flex-col">
-                <span className="text-base font-extrabold text-white tracking-tight leading-tight">
-                  NAVIN HOMEO CARE
-                </span>
-                <span className="text-xs font-bold text-emerald-400 tracking-wider uppercase">
-                  &amp; RESEARCH CENTER
-                </span>
+            <Link to="/" className="inline-flex items-center group">
+              <div className="bg-white px-3.5 py-2 rounded-xl shadow-xs border border-white/10 group-hover:scale-[1.02] transition-transform">
+                <img
+                  src="/logo.png"
+                  alt="Navin Homeo Care"
+                  className="h-10 sm:h-11 w-auto max-w-[190px] object-contain"
+                />
               </div>
             </Link>
             <p className="text-sm text-slate-300 leading-relaxed">
@@ -160,7 +156,8 @@ export const Footer: React.FC = () => {
                 <Clock className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
                 <div className="text-xs text-slate-300">
                   <div className="font-semibold text-white">OPD Timings:</div>
-                  <div>Mon – Sat: 10:00 AM – 8:00 PM</div>
+                  <div>Mon – Thu: 10:00 AM – 8:00 PM</div>
+                  <div>Fri – Sat: Closed / Off</div>
                   <div>Sun: 10:00 AM – 2:00 PM</div>
                 </div>
               </div>
@@ -208,7 +205,7 @@ export const Footer: React.FC = () => {
 
           {/* Copyright */}
           <div className="text-center md:text-right">
-            © 2026 Navin Homeo Care &amp; Research Center. All rights reserved.
+            © 2026 Navin Homeo Care. All rights reserved.
           </div>
         </div>
       </div>

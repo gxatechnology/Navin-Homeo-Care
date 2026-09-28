@@ -1,4 +1,4 @@
-// Dedicated Audit Log Service for Navin Homeo Care & Research Center Admin
+// Dedicated Audit Log Service for Navin Homeo Care Admin
 // Conforms to Section 14 (Audit Log) requirement:
 // Logs: Login, Product Created, Product Edited, Stock Changed, Order Status Changed, Appointment Status Changed, Settings Changed
 // Stores: Action, Timestamp, Admin Account

@@ -16,163 +16,15 @@ import {
 } from 'lucide-react';
 
 // ====================================================
-// MEDICAL CADUCEUS & NATURAL CARE EMBLEM
-// Vector icon reproducing the final logo emblem
+// CLINIC LOGO
 // ====================================================
-export const ClinicLogoSymbol: React.FC<{ className?: string }> = ({ className = 'h-11 w-11' }) => {
+export const ClinicLogoSymbol: React.FC<{ className?: string }> = ({ className = 'h-11 w-auto' }) => {
   return (
-    <svg
-      viewBox="0 0 100 100"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-      className={className}
-      aria-label="Navin Homeo Care Medical Emblem"
-    >
-      <defs>
-        {/* Metallic Gold Gradients */}
-        <linearGradient id="nhcGoldStaff" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stopColor="#FDE68A" />
-          <stop offset="35%" stopColor="#D4AF37" />
-          <stop offset="70%" stopColor="#A17410" />
-          <stop offset="100%" stopColor="#D4AF37" />
-        </linearGradient>
-        <linearGradient id="nhcGoldWings" x1="0%" y1="0%" x2="100%" y2="60%">
-          <stop offset="0%" stopColor="#FEF3C7" />
-          <stop offset="35%" stopColor="#D4AF37" />
-          <stop offset="75%" stopColor="#A17410" />
-          <stop offset="100%" stopColor="#784C05" />
-        </linearGradient>
-        <linearGradient id="nhcGoldBase" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stopColor="#FDE68A" />
-          <stop offset="50%" stopColor="#D4AF37" />
-          <stop offset="100%" stopColor="#854D0E" />
-        </linearGradient>
-
-        {/* Botanical Green Gradients */}
-        <linearGradient id="nhcLeafLeft" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stopColor="#22C55E" />
-          <stop offset="45%" stopColor="#15803D" />
-          <stop offset="100%" stopColor="#0B4619" />
-        </linearGradient>
-        <linearGradient id="nhcLeafRight" x1="100%" y1="0%" x2="0%" y2="100%">
-          <stop offset="0%" stopColor="#4ADE80" />
-          <stop offset="50%" stopColor="#16A34A" />
-          <stop offset="100%" stopColor="#0F5132" />
-        </linearGradient>
-
-        {/* Homeopathic Pearl Globule Gradients */}
-        <radialGradient id="nhcPearl" cx="35%" cy="35%" r="65%">
-          <stop offset="0%" stopColor="#FFFFFF" />
-          <stop offset="70%" stopColor="#F1F5F9" />
-          <stop offset="100%" stopColor="#94A3B8" />
-        </radialGradient>
-      </defs>
-
-      {/* Golden Base Arc */}
-      <path
-        d="M12 58 C 15 84, 45 92, 50 92 C 55 92, 85 84, 88 58"
-        stroke="url(#nhcGoldBase)"
-        strokeWidth="3.5"
-        strokeLinecap="round"
-        fill="none"
-      />
-
-      {/* Left Medicinal Leaf */}
-      <path
-        d="M48 76 C 36 76, 12 70, 15 42 C 22 28, 38 46, 48 76 Z"
-        fill="url(#nhcLeafLeft)"
-      />
-      <path
-        d="M20 48 C 28 58, 36 68, 48 74"
-        stroke="#86EFAC"
-        strokeWidth="1"
-        strokeLinecap="round"
-        opacity="0.8"
-      />
-
-      {/* Right Branch & Leaves */}
-      <path
-        d="M52 74 C 62 66, 85 55, 82 38 C 72 32, 60 48, 52 74 Z"
-        fill="url(#nhcLeafRight)"
-      />
-      <path
-        d="M52 74 C 66 60, 74 46, 78 40"
-        stroke="#BBF7D0"
-        strokeWidth="1"
-        strokeLinecap="round"
-        opacity="0.75"
-      />
-
-      {/* Winged Caduceus: Left Wing */}
-      <path
-        d="M48 28 C 42 22, 26 18, 8 23 C 14 30, 26 35, 42 34 C 44 34, 46 32, 48 28 Z"
-        fill="url(#nhcGoldWings)"
-      />
-      <path
-        d="M14 26 C 24 31, 34 33, 46 32"
-        stroke="#FDF0CD"
-        strokeWidth="1"
-        strokeLinecap="round"
-        opacity="0.9"
-      />
-      <path
-        d="M18 31 C 28 35, 38 36, 46 34"
-        stroke="#784C05"
-        strokeWidth="0.8"
-        strokeLinecap="round"
-        opacity="0.75"
-      />
-
-      {/* Winged Caduceus: Right Wing */}
-      <path
-        d="M52 28 C 58 22, 74 18, 92 23 C 86 30, 74 35, 58 34 C 56 34, 54 32, 52 28 Z"
-        fill="url(#nhcGoldWings)"
-      />
-      <path
-        d="M86 26 C 76 31, 66 33, 54 32"
-        stroke="#FDF0CD"
-        strokeWidth="1"
-        strokeLinecap="round"
-        opacity="0.9"
-      />
-      <path
-        d="M82 31 C 72 35, 62 36, 54 34"
-        stroke="#784C05"
-        strokeWidth="0.8"
-        strokeLinecap="round"
-        opacity="0.75"
-      />
-
-      {/* Central Staff (Golden Rod) */}
-      <rect x="48" y="18" width="4" height="60" rx="2" fill="url(#nhcGoldStaff)" />
-      {/* Top Finial Sphere */}
-      <circle cx="50" cy="15" r="5.5" fill="url(#nhcGoldStaff)" stroke="#FDF0CD" strokeWidth="0.8" />
-
-      {/* Coiled Serpent */}
-      <path
-        d="M48 38 C 40 37, 40 44, 50 46 C 60 48, 60 55, 50 57 C 42 59, 42 66, 50 68"
-        stroke="url(#nhcGoldStaff)"
-        strokeWidth="3.2"
-        strokeLinecap="round"
-        fill="none"
-      />
-      {/* Serpent Head looking toward staff */}
-      <path
-        d="M48 37 C 49 35, 52 35, 53 37"
-        stroke="#FDE68A"
-        strokeWidth="2"
-        strokeLinecap="round"
-      />
-
-      {/* Homeopathic White Pearls / Globules at Base */}
-      <circle cx="43" cy="74" r="5" fill="url(#nhcPearl)" stroke="#CBD5E1" strokeWidth="0.6" />
-      <circle cx="50" cy="77" r="5.5" fill="url(#nhcPearl)" stroke="#CBD5E1" strokeWidth="0.6" />
-      <circle cx="57" cy="73" r="5" fill="url(#nhcPearl)" stroke="#CBD5E1" strokeWidth="0.6" />
-      <circle cx="47" cy="69" r="4.2" fill="url(#nhcPearl)" stroke="#CBD5E1" strokeWidth="0.6" />
-      <circle cx="54" cy="68" r="4.2" fill="url(#nhcPearl)" stroke="#CBD5E1" strokeWidth="0.6" />
-      <circle cx="38" cy="77" r="3.2" fill="url(#nhcPearl)" stroke="#CBD5E1" strokeWidth="0.5" />
-      <circle cx="62" cy="76" r="3.2" fill="url(#nhcPearl)" stroke="#CBD5E1" strokeWidth="0.5" />
-    </svg>
+    <img
+      src="/logo.png"
+      alt="Navin Homeo Care"
+      className={`${className} object-contain`}
+    />
   );
 };
 
@@ -225,7 +77,7 @@ export const Header: React.FC = () => {
             <span className="text-slate-600">•</span>
             <div className="flex items-center gap-1.5 text-slate-300">
               <Clock className="w-3.5 h-3.5 text-emerald-400" />
-              <span>Mon – Sat: 10:00 AM – 8:00 PM | Sun: 10:00 AM – 2:00 PM</span>
+              <span>Mon – Thu: 10:00 AM – 8:00 PM | Sun: 10:00 AM – 2:00 PM</span>
             </div>
           </div>
 
@@ -254,40 +106,13 @@ export const Header: React.FC = () => {
          ==================================================== */}
       <div className="hidden lg:block">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between gap-4">
-          {/* Left: Clinic Logo & Name (matching final logo style) */}
-          <Link to="/" className="flex items-center gap-3 shrink-0 group select-none">
-            <div className="relative shrink-0 flex items-center justify-center">
-              <ClinicLogoSymbol className="h-11 w-11 xl:h-12 xl:w-12 object-contain group-hover:scale-105 transition-transform" />
-            </div>
-            <div className="flex flex-col justify-center">
-              {/* Line 1: NAVIN - large / dominant, deep navy blue, elegant serif */}
-              <span
-                className="text-[21px] xl:text-[23px] font-bold text-[#0A1E3F] tracking-tight leading-none"
-                style={{ fontFamily: "'Playfair Display', 'Cinzel', Georgia, serif" }}
-              >
-                NAVIN
-              </span>
-
-              {/* Line 2: HOMEO CARE - green, elegant serif, slightly smaller than NAVIN */}
-              <span
-                className="text-[12.5px] xl:text-[13.5px] font-bold text-[#0F5132] tracking-[0.03em] leading-tight mt-0.5"
-                style={{ fontFamily: "'Playfair Display', 'Cinzel', Georgia, serif" }}
-              >
-                HOMEO CARE
-              </span>
-
-              {/* Line 3: & RESEARCH CENTER - deep navy blue, small uppercase, increased letter spacing, subtle gold accent */}
-              <div className="flex items-center gap-1.5 mt-0.5">
-                <span className="h-[1px] w-2 bg-[#C59B27]/60"></span>
-                <span
-                  className="text-[8.5px] xl:text-[9px] font-bold text-[#0A1E3F] tracking-[0.2em] uppercase leading-none"
-                  style={{ fontFamily: "'Cinzel', 'Playfair Display', Georgia, serif" }}
-                >
-                  &amp; RESEARCH CENTER
-                </span>
-                <span className="h-[1px] w-2 bg-[#C59B27]/60"></span>
-              </div>
-            </div>
+          {/* Left: Clinic Logo */}
+          <Link to="/" className="flex items-center gap-3 shrink-0 group select-none py-1">
+            <img
+              src="/logo.png"
+              alt="Navin Homeo Care"
+              className="h-12 xl:h-13.5 w-auto max-w-[210px] xl:max-w-[230px] object-contain group-hover:opacity-95 transition-opacity"
+            />
           </Link>
 
           {/* Center Navigation Links */}
@@ -351,53 +176,13 @@ export const Header: React.FC = () => {
           MOBILE & TABLET HEADER (Clean, Compact, No Broken Wrapping)
          ==================================================== */}
       <div className="lg:hidden px-3 xs:px-4 h-16 flex items-center justify-between gap-2">
-        {/* Left: Small clinic logo & styled brand name */}
-        <Link to="/" className="flex items-center gap-2 xs:gap-2.5 min-w-0 shrink-0 group select-none">
-          <div className="relative shrink-0 flex items-center justify-center">
-            <ClinicLogoSymbol className="h-9 w-9 sm:h-10 sm:w-10 object-contain group-hover:scale-105 transition-transform" />
-          </div>
-
-          {/* Mobile (<640px): simplified "Navin" in navy, "Homeo Care" in green */}
-          <div className="sm:hidden flex items-baseline gap-1 text-[15px] xs:text-[16px] tracking-tight truncate leading-tight">
-            <span
-              className="font-bold text-[#0A1E3F]"
-              style={{ fontFamily: "'Playfair Display', 'Cinzel', Georgia, serif" }}
-            >
-              Navin
-            </span>
-            <span
-              className="font-bold text-[#0F5132]"
-              style={{ fontFamily: "'Playfair Display', 'Cinzel', Georgia, serif" }}
-            >
-              Homeo Care
-            </span>
-          </div>
-
-          {/* Tablet (640px to 1023px, e.g. 768px): scaled 3-line branding */}
-          <div className="hidden sm:flex flex-col justify-center">
-            <span
-              className="text-[17px] font-bold text-[#0A1E3F] tracking-tight leading-none"
-              style={{ fontFamily: "'Playfair Display', 'Cinzel', Georgia, serif" }}
-            >
-              NAVIN
-            </span>
-            <span
-              className="text-[11px] font-bold text-[#0F5132] tracking-[0.03em] leading-tight mt-0.5"
-              style={{ fontFamily: "'Playfair Display', 'Cinzel', Georgia, serif" }}
-            >
-              HOMEO CARE
-            </span>
-            <div className="flex items-center gap-1 mt-0.5">
-              <span className="h-[0.5px] w-1.5 bg-[#C59B27]/60"></span>
-              <span
-                className="text-[7.5px] font-bold text-[#0A1E3F] tracking-[0.16em] uppercase leading-none"
-                style={{ fontFamily: "'Cinzel', 'Playfair Display', Georgia, serif" }}
-              >
-                &amp; RESEARCH CENTER
-              </span>
-              <span className="h-[0.5px] w-1.5 bg-[#C59B27]/60"></span>
-            </div>
-          </div>
+        {/* Left: Small clinic logo */}
+        <Link to="/" className="flex items-center min-w-0 shrink-0 group select-none py-1">
+          <img
+            src="/logo.png"
+            alt="Navin Homeo Care"
+            className="h-9 xs:h-10 sm:h-11 w-auto max-w-[170px] sm:max-w-[200px] object-contain group-hover:opacity-95 transition-opacity"
+          />
         </Link>
 
         {/* Right Action Icons: Cart, Book button/icon, Hamburger */}

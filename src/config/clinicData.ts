@@ -48,13 +48,13 @@ export interface FaqItem {
 }
 
 export const CLINIC_CONFIG = {
-  name: 'Navin Homeo Care & Research Center',
+  name: 'Navin Homeo Care',
   shortName: 'Navin Homeo Care',
   doctorName: 'Dr. Navin Maurya',
   doctorTitle: 'Homeopathic Physician',
   doctorQualifications: '[Qualifications & clinical registrations: Editable placeholder]',
   doctorBio:
-    'Dr. Navin Maurya provides personalized homeopathic consultation with an emphasis on detailed case assessment and supportive, patient-centered care at Navin Homeo Care & Research Center in Alambagh, Lucknow.',
+    'Dr. Navin Maurya provides personalized homeopathic consultation with an emphasis on detailed case assessment and supportive, patient-centered care at Navin Homeo Care in Alambagh, Lucknow.',
 
   get doctor() {
     return {
@@ -88,7 +88,7 @@ export const CLINIC_CONFIG = {
 
   whatsappNumber: '917318306699',
   whatsappMessage:
-    'Hello, I would like to book a consultation at Navin Homeo Care & Research Center.',
+    'Hello, I would like to book a consultation at Navin Homeo Care.',
   get whatsappLink() {
     return `https://wa.me/${this.whatsappNumber}?text=${encodeURIComponent(this.whatsappMessage)}`;
   },
@@ -108,9 +108,12 @@ export const CLINIC_CONFIG = {
   reviewsSource: 'Google Reviews',
 
   timings: {
+    monToThu: '10:00 AM – 8:00 PM',
     monToSat: '10:00 AM – 8:00 PM',
+    friday: 'Closed',
+    saturday: 'Closed',
     sunday: '10:00 AM – 2:00 PM',
-    dailySummary: 'Mon – Sat: 10:00 AM – 8:00 PM | Sun: 10:00 AM – 2:00 PM',
+    dailySummary: 'Mon – Thu: 10:00 AM – 8:00 PM | Sun: 10:00 AM – 2:00 PM',
   },
 
   trustBadges: [
@@ -120,7 +123,7 @@ export const CLINIC_CONFIG = {
   ],
 
   images: {
-    logo: 'https://lh3.googleusercontent.com/aida/AEtjO1UQEtrKz_oBWN2X95alnrSzJ-rMpEWqHpLjQUw982Es1QEM5EmA-CEPGG5vbWyI1p5pdjQsvLa-wdp15CZyTGNnMWIj6HmO3d9qwVGNnAanw9QLztMJ2r5-t34JCPEDA6Wgj_o2OIU64zXrTR46mgRfOaH-4_vyIHHk740QigtjYvckSTXil9648bagFBX_d02uJ3aOeX_p3DpTmXnJFkTSoYrN_7lNPT8ZwLFQL9sXIEx02xp26RUHVeKm',
+    logo: '/logo.png',
     heroDoctor: '/dr-navin-hero.jpg',
     aboutDoctor: '/dr-navin-about.jpg',
     doctorDesk: '/dr-navin-hero.jpg',
@@ -586,7 +589,7 @@ export const FAQS_DATA: FaqItem[] = [
     category: 'booking',
   },
   {
-    question: 'Where is Navin Homeo Care & Research Center located?',
+    question: 'Where is Navin Homeo Care located?',
     answer:
       'The clinic is situated Near Pakri Ka Pul (500 meters), Azad Nagar Road, near Zoom Optical, opposite Singh Medical Store, Alambagh, Lucknow, Uttar Pradesh 226005.',
     category: 'location',

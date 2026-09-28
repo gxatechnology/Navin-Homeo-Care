@@ -45,7 +45,7 @@ export const AdminCustomersPage: React.FC = () => {
 
   const getWhatsAppLink = (cust: CustomerSummary) => {
     const cleanPhone = cust.phone.replace(/\D/g, '').slice(-10);
-    const message = `Namaste ${cust.fullName}, this is Navin Homeo Care & Research Center. How may we assist you today?`;
+    const message = `Namaste ${cust.fullName}, this is Navin Homeo Care. How may we assist you today?`;
     return `https://wa.me/91${cleanPhone}?text=${encodeURIComponent(message)}`;
   };
 

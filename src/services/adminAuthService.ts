@@ -1,4 +1,4 @@
-// Secure Admin Authentication Service for Navin Homeo Care & Research Center
+// Secure Admin Authentication Service for Navin Homeo Care
 // Complies strictly with security standards:
 // 1. Never displays or exposes admin password in frontend.
 // 2. Never hard-codes password in client source code.
@@ -26,7 +26,7 @@ const SESSION_STORAGE_KEY = 'nhc_admin_session_auth_v1';
 const CREDENTIALS_HASH_KEY = 'nhc_admin_cred_hash_v1';
 const RESET_TOKENS_KEY = 'nhc_admin_reset_requests_v1';
 
-// Designated Admin Email for Navin Homeo Care & Research Center
+// Designated Admin Email for Navin Homeo Care
 export const DEFAULT_ADMIN_EMAIL = 'navin@navinhomeocare.com';
 
 // Standard session lifetime: 2 hours (in ms)

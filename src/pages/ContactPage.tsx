@@ -31,7 +31,7 @@ export const ContactPage: React.FC = () => {
             Contact &amp; Visit Us in Alambagh
           </h1>
           <p className="text-lg text-slate-300 max-w-3xl leading-relaxed">
-            Get in touch with Navin Homeo Care &amp; Research Center to schedule an appointment or ask for directions. Dr. Navin Maurya welcomes patients from across Lucknow and surrounding regions.
+            Get in touch with Navin Homeo Care to schedule an appointment or ask for directions. Dr. Navin Maurya welcomes patients from across Lucknow and surrounding regions.
           </p>
         </div>
       </section>
@@ -121,8 +121,12 @@ export const ContactPage: React.FC = () => {
                       <span className="text-xs text-slate-500 uppercase tracking-wider font-semibold">OPD Timings</span>
                       <div className="mt-2 space-y-1.5 text-xs text-slate-700">
                         <div className="flex justify-between py-1 border-b border-slate-100">
-                          <span className="font-medium text-slate-900">Monday – Saturday</span>
+                          <span className="font-medium text-slate-900">Monday – Thursday</span>
                           <span className="font-semibold text-emerald-700">10:00 AM – 8:00 PM</span>
+                        </div>
+                        <div className="flex justify-between py-1 border-b border-slate-100">
+                          <span className="font-medium text-slate-900">Friday – Saturday</span>
+                          <span className="font-semibold text-rose-600">Closed / Off</span>
                         </div>
                         <div className="flex justify-between py-1">
                           <span className="font-medium text-slate-900">Sunday</span>

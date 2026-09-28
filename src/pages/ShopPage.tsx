@@ -180,7 +180,7 @@ export const ShopPage: React.FC = () => {
             Health &amp; Wellness Store
           </h1>
           <p className="text-sm sm:text-base text-slate-300 max-w-2xl leading-relaxed">
-            Order natural botanical skincare, scalp oils, and supportive wellness formulations directly from Navin Homeo Care &amp; Research Center, Lucknow.
+            Order natural botanical skincare, scalp oils, and supportive wellness formulations directly from Navin Homeo Care, Lucknow.
           </p>
         </div>
       </section>
@@ -475,7 +475,7 @@ export const ShopPage: React.FC = () => {
                 Product Quality Assurance &amp; Health Notice
               </span>
               <p className="leading-relaxed">
-                Health supplements, topical emollients, and wellness products available in our shop are formulated for general comfort and nutritional wellness. They are not intended to replace qualified medical consultation or clinical assessment. For diagnosis or management of specific health conditions, please book a personal consultation with Dr. Navin Maurya at Navin Homeo Care &amp; Research Center.
+                Health supplements, topical emollients, and wellness products available in our shop are formulated for general comfort and nutritional wellness. They are not intended to replace qualified medical consultation or clinical assessment. For diagnosis or management of specific health conditions, please book a personal consultation with Dr. Navin Maurya at Navin Homeo Care.
               </p>
             </div>
           </div>

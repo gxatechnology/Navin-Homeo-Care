@@ -150,7 +150,7 @@ export const AdminOrdersPage: React.FC<{ initialSelectedId?: string }> = ({ init
 
   const getWhatsAppOrderLink = (order: Order) => {
     const cleanPhone = order.customer.phone.replace(/\D/g, '').slice(-10);
-    const message = `Namaste ${order.customer.fullName}, this is Navin Homeo Care & Research Center regarding your Order ${order.id} (Status: ${order.status.toUpperCase()}, Total: ₹${order.total}). Your parcel is being prepared. Tracking assistance is available here.`;
+    const message = `Namaste ${order.customer.fullName}, this is Navin Homeo Care regarding your Order ${order.id} (Status: ${order.status.toUpperCase()}, Total: ₹${order.total}). Your parcel is being prepared. Tracking assistance is available here.`;
     return `https://wa.me/91${cleanPhone}?text=${encodeURIComponent(message)}`;
   };
 
@@ -622,7 +622,7 @@ export const AdminOrdersPage: React.FC<{ initialSelectedId?: string }> = ({ init
             </div>
 
             {/* Printable Invoice Area - Conforms strictly to Section 3:
-                - Navin Homeo Care & Research Center
+                - Navin Homeo Care
                 - Order ID
                 - Customer Details
                 - Product Details
@@ -639,7 +639,7 @@ export const AdminOrdersPage: React.FC<{ initialSelectedId?: string }> = ({ init
               <div className="border-b-2 border-slate-900 pb-4 flex items-start justify-between">
                 <div>
                   <h2 className="text-xl font-black text-[#001428] tracking-tight">
-                    NAVIN HOMEO CARE & RESEARCH CENTER
+                    NAVIN HOMEO CARE
                   </h2>
                   <p className="text-xs text-slate-600 font-medium mt-0.5">
                     Health & Wellness Products • Clinic: Alambagh, Lucknow
@@ -779,7 +779,7 @@ export const AdminOrdersPage: React.FC<{ initialSelectedId?: string }> = ({ init
                 <div className="text-center">
                   <div className="w-36 border-b border-slate-400 mb-1" />
                   <p className="font-bold text-slate-800">Order Fulfillment</p>
-                  <p className="text-[10px]">Navin Homeo Care & Research Center</p>
+                  <p className="text-[10px]">Navin Homeo Care</p>
                 </div>
               </div>
             </div>

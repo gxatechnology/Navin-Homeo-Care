@@ -345,7 +345,7 @@ export const AdminDashboardPage: React.FC = () => {
     <AdminLayout
       activeTab="dashboard"
       pageTitle="Clinical & Store Overview"
-      pageSubtitle={`Real-time operations for ${todayStr} • Navin Homeo Care & Research Center`}
+      pageSubtitle={`Real-time operations for ${todayStr} • Navin Homeo Care`}
       headerAction={
         <div className="flex items-center gap-2">
           <button

@@ -121,7 +121,7 @@ export const PRODUCTS_DATA: ProductItem[] = [
     stockStatus: 'in_stock',
     sku: 'NHC-SKU-002',
     packSize: '200 ml Bottle',
-    manufacturer: 'Herbal Wellness Laboratories (GMP Certified). Packaged for Navin Homeo Care & Research Center.',
+    manufacturer: 'Herbal Wellness Laboratories (GMP Certified). Packaged for Navin Homeo Care.',
     ingredients: 'Arnica Montana extract, Pilocarpus (Jaborandi) extract, Brahmi extract in Cold Pressed Coconut and Sesame Oil base.',
     usageInstructions: 'Massage 5–10 ml gently into scalp using fingertips in circular motions before bedtime or 1 hour prior to washing hair.',
     storageInfo: 'Store below 30°C in a dry place. Protect from direct heat. Natural oils may cloud slightly in winter.',

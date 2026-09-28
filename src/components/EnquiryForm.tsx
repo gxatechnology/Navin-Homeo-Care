@@ -148,11 +148,11 @@ export const EnquiryForm: React.FC = () => {
             <option value="" disabled>
               Select OPD Slot
             </option>
-            <option value="Morning (10:00 AM – 1:30 PM)">
-              Morning (10:00 AM – 1:30 PM)
+            <option value="Morning OPD (Mon–Thu: 10:00 AM – 1:30 PM)">
+              Morning OPD (Mon – Thu: 10:00 AM – 1:30 PM)
             </option>
-            <option value="Evening (5:00 PM – 8:30 PM)">
-              Evening (5:00 PM – 8:30 PM)
+            <option value="Evening OPD (Mon–Thu: 5:00 PM – 8:30 PM)">
+              Evening OPD (Mon – Thu: 5:00 PM – 8:30 PM)
             </option>
             <option value="Sunday Morning (10:00 AM – 2:00 PM)">
               Sunday Morning (10:00 AM – 2:00 PM)

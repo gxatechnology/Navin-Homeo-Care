@@ -46,7 +46,7 @@ export const GalleryPage: React.FC = () => {
             Clinic Tour &amp; Facilities
           </h1>
           <p className="text-base sm:text-lg text-slate-300 max-w-2xl leading-relaxed">
-            Take a visual tour of Navin Homeo Care &amp; Research Center in Alambagh, Lucknow. Real photographs of our doctor cabin, reception, and clinic facilities.
+            Take a visual tour of Navin Homeo Care in Alambagh, Lucknow. Real photographs of our doctor cabin, reception, and clinic facilities.
           </p>
         </div>
       </section>
@@ -127,7 +127,7 @@ export const GalleryPage: React.FC = () => {
                 Designed for Calm, Hygiene &amp; Patient Privacy
               </h2>
               <p className="text-xs sm:text-sm text-slate-600 leading-relaxed mb-6">
-                When you step into Navin Homeo Care &amp; Research Center, our focus is to provide an orderly, quiet space where you can share your health background without pressure or hurried atmosphere.
+                When you step into Navin Homeo Care, our focus is to provide an orderly, quiet space where you can share your health background without pressure or hurried atmosphere.
               </p>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">

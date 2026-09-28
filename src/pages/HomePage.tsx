@@ -195,11 +195,11 @@ export const HomePage: React.FC = () => {
                     <div>
                       <h3 className="text-xs sm:text-sm font-bold text-[#001428] leading-tight">{CLINIC_CONFIG.doctorName}</h3>
                       <p className="text-[10px] sm:text-[11px] text-[#006e2d] font-semibold">{CLINIC_CONFIG.doctorTitle}</p>
-                      <p className="text-[9px] sm:text-[10px] text-slate-500 line-clamp-1">Navin Homeo Care &amp; Research Center</p>
+                      <p className="text-[9px] sm:text-[10px] text-slate-500 line-clamp-1">Navin Homeo Care</p>
                     </div>
                     <div className="text-right shrink-0 pl-2">
                       <span className="text-[9px] sm:text-[10px] font-semibold text-slate-500 uppercase block">Alambagh OPD</span>
-                      <span className="text-[11px] sm:text-xs font-bold text-slate-800">Mon – Sat</span>
+                      <span className="text-[11px] sm:text-xs font-bold text-slate-800">Mon – Thu</span>
                     </div>
                   </div>
                 </div>
@@ -303,7 +303,7 @@ export const HomePage: React.FC = () => {
                     </span>
                   </div>
                   <p className="text-xs text-slate-500">
-                    Navin Homeo Care &amp; Research Center, Alambagh, Lucknow
+                    Navin Homeo Care, Alambagh, Lucknow
                   </p>
                 </div>
               </div>
@@ -323,7 +323,7 @@ export const HomePage: React.FC = () => {
             <div className="lg:col-span-7 flex flex-col gap-5">
               <div className="space-y-3">
                 <p className="text-base sm:text-lg text-slate-800 leading-relaxed font-medium">
-                  At Navin Homeo Care &amp; Research Center, <strong className="text-[#001428]">Dr. Navin Maurya</strong> provides personalized homeopathic consultation centered on detailed patient listening and constitutional case evaluation.
+                  At Navin Homeo Care, <strong className="text-[#001428]">Dr. Navin Maurya</strong> provides personalized homeopathic consultation centered on detailed patient listening and constitutional case evaluation.
                 </p>
                 <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
                   We believe every individual presents unique physiological, lifestyle, and environmental factors. Our patient-centered philosophy emphasizes gentle, individualized assessment rather than rushed consultation, supporting long-term health and wellbeing.
@@ -520,7 +520,7 @@ export const HomePage: React.FC = () => {
                 Health &amp; Wellness Products
               </h2>
               <p className="text-xs sm:text-sm text-slate-600 mt-1">
-                Natural supportive formulations available from Navin Homeo Care &amp; Research Center.
+                Natural supportive formulations available from Navin Homeo Care.
               </p>
             </div>
 
@@ -613,7 +613,7 @@ export const HomePage: React.FC = () => {
               REAL CLINIC TOUR
             </span>
             <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-[#001428] tracking-tight">
-              Inside Navin Homeo Care &amp; Research Center
+              Inside Navin Homeo Care
             </h2>
             <p className="text-xs sm:text-sm text-slate-600 mt-2">
               Actual photographs of our consultation cabin, reception lounge, and clinic facilities in Alambagh.
@@ -771,7 +771,7 @@ export const HomePage: React.FC = () => {
                   Looking for a Homeopathic Consultation in Lucknow?
                 </h2>
                 <p className="text-xs sm:text-sm text-slate-300 max-w-2xl mt-1 leading-relaxed">
-                  Book an in-person appointment with Dr. Navin Maurya at Navin Homeo Care &amp; Research Center in Alambagh, Lucknow.
+                  Book an in-person appointment with Dr. Navin Maurya at Navin Homeo Care in Alambagh, Lucknow.
                 </p>
               </div>
 
@@ -870,8 +870,12 @@ export const HomePage: React.FC = () => {
                     <span>Clinic OPD Timings</span>
                   </div>
                   <div className="flex justify-between">
-                    <span>Monday – Saturday:</span>
+                    <span>Monday – Thursday:</span>
                     <span className="font-semibold text-slate-900">10:00 AM – 8:00 PM</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>Friday – Saturday:</span>
+                    <span className="font-semibold text-rose-600">Closed / Off</span>
                   </div>
                   <div className="flex justify-between">
                     <span>Sunday:</span>

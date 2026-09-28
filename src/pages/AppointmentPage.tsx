@@ -30,7 +30,7 @@ export const AppointmentPage: React.FC = () => {
             Schedule Your Consultation
           </h1>
           <p className="text-lg text-slate-300 max-w-3xl leading-relaxed">
-            Reserve your consultation slot with Dr. Navin Maurya at Navin Homeo Care &amp; Research Center in Alambagh, Lucknow. Thorough case-taking and constitutional evaluation for your health needs.
+            Reserve your consultation slot with Dr. Navin Maurya at Navin Homeo Care in Alambagh, Lucknow. Thorough case-taking and constitutional evaluation for your health needs.
           </p>
         </div>
       </section>
@@ -88,8 +88,12 @@ export const AppointmentPage: React.FC = () => {
               </h3>
               <div className="space-y-2 text-xs text-slate-300">
                 <div className="flex justify-between py-1 border-b border-slate-800">
-                  <span>Monday – Saturday:</span>
+                  <span>Monday – Thursday:</span>
                   <span className="font-semibold text-emerald-400">10:00 AM – 8:00 PM</span>
+                </div>
+                <div className="flex justify-between py-1 border-b border-slate-800">
+                  <span>Friday – Saturday:</span>
+                  <span className="font-semibold text-rose-400">Closed / Off</span>
                 </div>
                 <div className="flex justify-between py-1">
                   <span>Sunday:</span>

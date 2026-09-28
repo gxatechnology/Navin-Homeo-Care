@@ -30,7 +30,7 @@ export const AboutPage: React.FC = () => {
             Meet Dr. Navin Maurya
           </h1>
           <p className="text-base sm:text-lg text-slate-300 max-w-2xl leading-relaxed">
-            Leading <span className="text-white font-medium">Navin Homeo Care &amp; Research Center</span> in Alambagh, Lucknow with a dedicated, patient-centered approach to constitutional homeopathic consultation.
+            Leading <span className="text-white font-medium">Navin Homeo Care</span> in Alambagh, Lucknow with a dedicated, patient-centered approach to constitutional homeopathic consultation.
           </p>
         </div>
       </section>
@@ -83,7 +83,7 @@ export const AboutPage: React.FC = () => {
                     </div>
                     <div className="flex items-center gap-3">
                       <Clock className="w-4 h-4 text-[#006e2d] shrink-0" />
-                      <span>Mon – Sat: 10:00 AM – 8:00 PM | Sun: 10:00 AM – 2:00 PM</span>
+                      <span>Mon – Thu: 10:00 AM – 8:00 PM | Sun: 10:00 AM – 2:00 PM</span>
                     </div>
                     <div className="flex items-center gap-3">
                       <Phone className="w-4 h-4 text-[#006e2d] shrink-0" />
@@ -126,7 +126,7 @@ export const AboutPage: React.FC = () => {
                 </h3>
                 <div className="text-slate-600 space-y-4 text-xs sm:text-sm leading-relaxed">
                   <p>
-                    At <strong className="text-slate-900 font-bold">Navin Homeo Care &amp; Research Center</strong>, we believe effective homeopathic management begins with attentive listening. Every individual exhibits unique physical, physiological, and emotional responses to environmental triggers and underlying stressors.
+                    At <strong className="text-slate-900 font-bold">Navin Homeo Care</strong>, we believe effective homeopathic management begins with attentive listening. Every individual exhibits unique physical, physiological, and emotional responses to environmental triggers and underlying stressors.
                   </p>
                   <p>
                     Under the clinical direction of <strong className="text-slate-900 font-bold">Dr. Navin Maurya</strong>, consultation sessions are conducted in an unhurried, comfortable atmosphere. Rather than offering one-size-fits-all suggestions, Dr. Maurya carefully evaluates past medical records, lifestyle factors, hereditary tendencies, and current symptomatology.
@@ -231,7 +231,7 @@ export const AboutPage: React.FC = () => {
           <Info className="w-5 h-5 text-amber-700 shrink-0 mt-0.5" />
           <div className="text-xs sm:text-sm leading-relaxed">
             <strong className="block mb-0.5">Important Note on Healthcare Choices:</strong>
-            Homeopathic consultations at Navin Homeo Care &amp; Research Center are aimed at constitutional support and personalized wellbeing. Patients experiencing severe acute medical emergencies or critical illness should promptly report to nearest hospital emergency departments.
+            Homeopathic consultations at Navin Homeo Care are aimed at constitutional support and personalized wellbeing. Patients experiencing severe acute medical emergencies or critical illness should promptly report to nearest hospital emergency departments.
           </div>
         </div>
       </section>
