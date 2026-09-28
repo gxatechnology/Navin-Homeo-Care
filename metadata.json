@@ -1,0 +1,6 @@
+{
+  "name": "Navin Homeo Care & Research Center",
+  "description": "Official website of Navin Homeo Care & Research Center led by Dr. Navin Maurya in Alambagh, Lucknow. Evidence-backed, constitutional homeopathic care, online appointment booking, clinic directions, and consultation services.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
