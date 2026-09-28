@@ -183,7 +183,7 @@ export const HomePage: React.FC = () => {
               <div className="relative bg-white p-3 rounded-3xl shadow-sm border border-slate-200/90 overflow-hidden">
                 <div className="relative aspect-4/3 sm:aspect-square w-full rounded-2xl overflow-hidden bg-slate-100">
                   <img
-                    src={CLINIC_CONFIG.images.doctorDesk}
+                    src={CLINIC_CONFIG.images.heroDoctor || CLINIC_CONFIG.images.doctorDesk}
                     alt="Dr. Navin Maurya at Navin Homeo Care, Alambagh, Lucknow"
                     className="w-full h-full object-cover object-[center_18%]"
                     referrerPolicy="no-referrer"
@@ -289,7 +289,7 @@ export const HomePage: React.FC = () => {
               <div className="bg-white p-3 rounded-2xl shadow-2xs border border-slate-200/80 overflow-hidden">
                 <div className="rounded-xl overflow-hidden aspect-4/3 bg-slate-100">
                   <img
-                    src={CLINIC_CONFIG.images.doctorDesk}
+                    src={CLINIC_CONFIG.images.aboutDoctor || CLINIC_CONFIG.images.doctorPortraitAlt || CLINIC_CONFIG.images.doctorDesk}
                     alt="Dr. Navin Maurya in consultation cabin"
                     className="w-full h-full object-cover object-[center_20%]"
                     referrerPolicy="no-referrer"

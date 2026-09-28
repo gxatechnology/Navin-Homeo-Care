@@ -121,13 +121,15 @@ export const CLINIC_CONFIG = {
 
   images: {
     logo: 'https://lh3.googleusercontent.com/aida/AEtjO1UQEtrKz_oBWN2X95alnrSzJ-rMpEWqHpLjQUw982Es1QEM5EmA-CEPGG5vbWyI1p5pdjQsvLa-wdp15CZyTGNnMWIj6HmO3d9qwVGNnAanw9QLztMJ2r5-t34JCPEDA6Wgj_o2OIU64zXrTR46mgRfOaH-4_vyIHHk740QigtjYvckSTXil9648bagFBX_d02uJ3aOeX_p3DpTmXnJFkTSoYrN_7lNPT8ZwLFQL9sXIEx02xp26RUHVeKm',
-    doctorDesk: '/Navin.png',
-    doctorPortraitAlt: '/Navin.png',
+    heroDoctor: '/dr-navin-hero.jpg',
+    aboutDoctor: '/dr-navin-about.jpg',
+    doctorDesk: '/dr-navin-hero.jpg',
+    doctorPortraitAlt: '/dr-navin-about.jpg',
     consultationCabin:
       'https://lh3.googleusercontent.com/aida-public/AB6AXuCiqsTqjo3EjoimAlF7LMA-43XUDoZtbJbR7mLxskJpnEg4XzTxJjsa7viVLZ07km0POefvXCbOC2H0b4S3L7pDLjV7Y5OShYFbdIZR3nEoPQ6_jM-N_XTgJjzPQzrMvl2PTy55Gp9yyCyjGXT_4DSGdyTwZ8bSDvwlBRDtO5Mh8_ut98M1ZLm4PyIW-FVvkD8mCO3-_A7V2_wo4IRLuo_HgRpyFgTcnpfZSzuwO2VYRP6yZGo9nlyI-A',
     receptionLounge:
       'https://lh3.googleusercontent.com/aida-public/AB6AXuAtvMBBJWkg_3WOb2Ntih7-r-htld17FUgjaugdBPdCmtSwvEFR5z67mb5rLN9Cy9oGYuAsjglWMf98mjlkMAQ_9V4RhY48iafpkd9Tu4D5nW-EiwJxaHTEo4-ImghD1M5lE1Q26WF4Axb-nKHNz8RaQ8Q2nfOLytCnagSHxVXWCDBwmj5iiryJw4Y5sinXZ12WoeaCEcfpPE8vJ1MVYwfe8neaRkuaz8E6BjjssUyUEruZo5UHsR8xYA',
-    doctorWithChart: '/Navin.png',
+    doctorWithChart: '/dr-navin-about.jpg',
     clinicRemedyCounter:
       'https://lh3.googleusercontent.com/aida-public/AB6AXuDTqAthkfFgo2GNSvLW3NOZcEI8eYorIz9FCNvCzhz-dG9AK_C0tb6XhEFTgRv2cTLEuJF23L88rf6Se6Fxp9UfMeU0TKhYtMytL2U9NjdHK_iBWKq1djJbYELO2o_Qvk_P8ccN0qRWeE12MLnHQuhxyL0FGVjjqxDuWotUFET_OHMGZ0WtM4RGHLhK9e-D1LSle7Dt5rRr5RdPDGNB9g16PfZjE7yFi7mnuBDNLZtyBlFvCaZA0qsFjw',
     clinicExterior:
