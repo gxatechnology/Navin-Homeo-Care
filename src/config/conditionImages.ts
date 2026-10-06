@@ -30,8 +30,8 @@ export const CONDITION_MEDIA_MAP: Record<string, ConditionMediaConfig> = {
     altText: 'Medical illustration representing skin dermis care and healthy hair follicle health',
     fallbackIcon: Sparkles,
     badgeLabel: 'Skin & Scalp Care',
-    containerBg: 'from-emerald-50/90 to-teal-50/50',
-    borderColor: 'border-emerald-200/70',
+    containerBg: 'from-emerald-50/50 via-slate-50/50 to-white',
+    borderColor: 'border-slate-200/80',
   },
   'allergy-and-respiratory': {
     slug: 'allergy-and-respiratory',
@@ -40,8 +40,8 @@ export const CONDITION_MEDIA_MAP: Record<string, ConditionMediaConfig> = {
     altText: 'Medical illustration of healthy respiratory lungs, airways and sinus breathing comfort',
     fallbackIcon: Wind,
     badgeLabel: 'Respiratory Care',
-    containerBg: 'from-sky-50/90 to-emerald-50/50',
-    borderColor: 'border-sky-200/70',
+    containerBg: 'from-sky-50/50 via-slate-50/50 to-white',
+    borderColor: 'border-slate-200/80',
   },
   'digestive-health': {
     slug: 'digestive-health',
@@ -50,8 +50,8 @@ export const CONDITION_MEDIA_MAP: Record<string, ConditionMediaConfig> = {
     altText: 'Medical illustration of gastric stomach health and digestive system harmony',
     fallbackIcon: Activity,
     badgeLabel: 'Digestive Wellness',
-    containerBg: 'from-amber-50/90 to-emerald-50/50',
-    borderColor: 'border-amber-200/70',
+    containerBg: 'from-amber-50/50 via-slate-50/50 to-white',
+    borderColor: 'border-slate-200/80',
   },
   'joint-and-musculoskeletal': {
     slug: 'joint-and-musculoskeletal',
@@ -60,8 +60,8 @@ export const CONDITION_MEDIA_MAP: Record<string, ConditionMediaConfig> = {
     altText: 'Medical illustration of spinal vertebrae column, joints and pain-relief alignment',
     fallbackIcon: Zap,
     badgeLabel: 'Joint & Spine Care',
-    containerBg: 'from-blue-50/90 to-emerald-50/50',
-    borderColor: 'border-blue-200/70',
+    containerBg: 'from-blue-50/50 via-slate-50/50 to-white',
+    borderColor: 'border-slate-200/80',
   },
   'womens-health': {
     slug: 'womens-health',
@@ -70,8 +70,8 @@ export const CONDITION_MEDIA_MAP: Record<string, ConditionMediaConfig> = {
     altText: 'Medical illustration of women hormonal balance and female wellness care',
     fallbackIcon: Heart,
     badgeLabel: "Women's Wellness",
-    containerBg: 'from-rose-50/90 to-emerald-50/50',
-    borderColor: 'border-rose-200/70',
+    containerBg: 'from-rose-50/50 via-slate-50/50 to-white',
+    borderColor: 'border-slate-200/80',
   },
   'child-health': {
     slug: 'child-health',
@@ -80,8 +80,8 @@ export const CONDITION_MEDIA_MAP: Record<string, ConditionMediaConfig> = {
     altText: 'Medical illustration of pediatric care and gentle child immunity wellness',
     fallbackIcon: Smile,
     badgeLabel: 'Pediatric Care',
-    containerBg: 'from-emerald-50/90 to-sky-50/50',
-    borderColor: 'border-emerald-200/70',
+    containerBg: 'from-emerald-50/50 via-slate-50/50 to-white',
+    borderColor: 'border-slate-200/80',
   },
   'chronic-health': {
     slug: 'chronic-health',
@@ -90,8 +90,8 @@ export const CONDITION_MEDIA_MAP: Record<string, ConditionMediaConfig> = {
     altText: 'Medical illustration of constitutional health rhythm, stamina and whole-body vitality',
     fallbackIcon: Stethoscope,
     badgeLabel: 'Constitutional Care',
-    containerBg: 'from-emerald-50/90 to-blue-50/50',
-    borderColor: 'border-emerald-200/70',
+    containerBg: 'from-emerald-50/50 via-slate-50/50 to-white',
+    borderColor: 'border-slate-200/80',
   },
   'general-consultation': {
     slug: 'general-consultation',
@@ -100,8 +100,8 @@ export const CONDITION_MEDIA_MAP: Record<string, ConditionMediaConfig> = {
     altText: 'Medical illustration of physician clinical assessment and holistic diagnosis shield',
     fallbackIcon: Shield,
     badgeLabel: 'Clinical Consultation',
-    containerBg: 'from-blue-50/90 to-emerald-50/50',
-    borderColor: 'border-blue-200/70',
+    containerBg: 'from-blue-50/50 via-slate-50/50 to-white',
+    borderColor: 'border-slate-200/80',
   },
 };
 

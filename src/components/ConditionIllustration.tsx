@@ -25,21 +25,21 @@ export const ConditionIllustration: React.FC<Props> = ({
 
   // Responsive dimension classes
   const sizeClasses = {
-    sm: 'w-10 h-10 min-w-[40px]',
-    md: 'w-12 h-12 sm:w-14 sm:h-14 min-w-[48px] sm:min-w-[56px]',
+    sm: 'w-11 h-11 min-w-[44px]',
+    md: 'w-[54px] h-[54px] min-w-[54px] sm:w-[66px] sm:h-[66px] sm:min-w-[66px]',
     lg: 'w-16 h-16 sm:w-20 sm:h-20 min-w-[64px] sm:min-w-[80px]',
   }[size];
 
   const imgSizeClasses = {
-    sm: 'w-7 h-7',
-    md: 'w-9 h-9 sm:w-11 sm:h-11',
+    sm: 'w-8 h-8',
+    md: 'w-[42px] h-[42px] sm:w-[52px] sm:h-[52px]',
     lg: 'w-12 h-12 sm:w-16 sm:h-16',
   }[size];
 
   const iconSizeClasses = {
     sm: 'w-5 h-5',
-    md: 'w-6 h-6',
-    lg: 'w-8 h-8',
+    md: 'w-7 h-7 sm:w-8 sm:h-8',
+    lg: 'w-9 h-9',
   }[size];
 
   return (

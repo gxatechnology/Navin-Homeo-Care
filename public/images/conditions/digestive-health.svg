@@ -1,53 +1,61 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 80" fill="none">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" fill="none">
   <defs>
-    <linearGradient id="dg-bg" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#fffbeb" stop-opacity="0.9"/>
-      <stop offset="100%" stop-color="#ecfdf5" stop-opacity="0.6"/>
+    <!-- Gastric Acidity / Discomfort Heat Glow -->
+    <radialGradient id="dg-heat" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ef4444" stop-opacity="0.85"/>
+      <stop offset="50%" stop-color="#f59e0b" stop-opacity="0.5"/>
+      <stop offset="100%" stop-color="#fef3c7" stop-opacity="0"/>
+    </radialGradient>
+    <!-- Stomach Bag Gradient -->
+    <linearGradient id="dg-stomach-bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f0fdf4"/>
+      <stop offset="60%" stop-color="#ecfdf5"/>
+      <stop offset="100%" stop-color="#e0f2fe"/>
     </linearGradient>
-    <linearGradient id="dg-stomach" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#059669"/>
-      <stop offset="100%" stop-color="#006e2d"/>
-    </linearGradient>
-    <linearGradient id="dg-glow" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#f59e0b"/>
-      <stop offset="100%" stop-color="#10b981"/>
-    </linearGradient>
-    <filter id="dg-shadow" x="-20%" y="-20%" width="140%" height="140%">
-      <feDropShadow dx="0" dy="2" stdDeviation="2.5" flood-color="#059669" flood-opacity="0.2"/>
+    <filter id="dg-shadow" x="-15%" y="-15%" width="130%" height="130%">
+      <feDropShadow dx="0" dy="2" stdDeviation="2.5" flood-color="#059669" flood-opacity="0.18"/>
     </filter>
   </defs>
 
-  <!-- Container Aura -->
-  <rect width="80" height="80" rx="20" fill="url(#dg-bg)"/>
+  <!-- Abdominal Cavity Outline (Subtle background silhouette) -->
+  <path d="M26 18 C 36 12, 64 12, 74 18 C 82 32, 82 66, 76 86 C 64 94, 36 94, 24 86 C 18 66, 18 32, 26 18 Z" 
+        fill="#f8fafc" stroke="#e2e8f0" stroke-width="1.4" opacity="0.7"/>
 
-  <!-- Esophagus entry -->
-  <path d="M38 12 L 38 22 C 38 24, 39 25, 41 26" stroke="#0284c7" stroke-width="2.5" stroke-linecap="round"/>
+  <!-- Esophagus entry (Upper Central Tube) -->
+  <path d="M48 6 L 48 20 C 48 23, 50 25, 52 27" stroke="#0284c7" stroke-width="3" stroke-linecap="round"/>
 
-  <!-- Anatomical Stomach Contour -->
-  <!-- Fundus (top arch) -> Greater Curvature (large left/bottom curve) -> Pylorus -> Duodenum (right turn) -->
-  <path d="M41 24 C 47 22, 56 25, 56 34 C 56 46, 45 56, 33 56 C 24 56, 20 48, 22 40 C 23 34, 28 30, 36 29 C 39 28.5, 41 27, 41 24 Z" 
-        fill="#f0fdf4" stroke="url(#dg-stomach)" stroke-width="2.4" stroke-linejoin="round" filter="url(#dg-shadow)"/>
+  <!-- Gastric Acidity / Heartburn Flare (Reflux & Stomach Center) -->
+  <circle cx="51" cy="40" r="16" fill="url(#dg-heat)"/>
 
-  <!-- Lesser Curvature inner definition -->
-  <path d="M40 31 C 36 34, 34 40, 38 46 C 41 49, 46 48, 48 44" 
-        stroke="#10b981" stroke-width="1.6" stroke-linecap="round" opacity="0.6"/>
+  <!-- Anatomical Stomach Organ (Fundus, Greater Curvature, Body, Antrum, Pylorus) -->
+  <path d="M52 24 C 60 21, 72 25, 73 37 C 74 54, 59 66, 42 66 C 30 66, 25 56, 27 45 C 29 36, 36 31, 46 30 C 50 29.5, 52 28, 52 24 Z" 
+        fill="url(#dg-stomach-bg)" stroke="#059669" stroke-width="2.6" stroke-linejoin="round" filter="url(#dg-shadow)"/>
 
-  <!-- Duodenum / Intestinal Loop Exit (Bottom Right) -->
-  <path d="M48 44 C 53 43, 58 47, 57 53 C 56 59, 49 61, 44 61 C 38 61, 35 64, 35 68" 
-        stroke="#059669" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
-  <path d="M44 64 C 48 64, 52 65, 54 68" 
-        stroke="#059669" stroke-width="1.8" stroke-linecap="round" opacity="0.7"/>
+  <!-- Lesser Curvature inner anatomy line -->
+  <path d="M51 32 C 45 36, 43 44, 49 52 C 54 57, 61 55, 63 50" 
+        stroke="#10b981" stroke-width="1.8" stroke-linecap="round" opacity="0.7"/>
 
-  <!-- Soothing Gut Balance / Digestive Harmony Waves inside stomach -->
-  <g stroke="url(#dg-glow)" stroke-width="1.4" stroke-linecap="round" opacity="0.85">
-    <path d="M29 42 Q 33 39 37 42 T 45 42"/>
-    <path d="M31 47 Q 35 44 39 47 T 47 47"/>
+  <!-- Acidity / Gastric Heat Flame Lines inside stomach -->
+  <g stroke="#ef4444" stroke-width="1.8" stroke-linecap="round">
+    <path d="M37 46 Q 42 41 47 46 T 57 46"/>
+    <path d="M39 52 Q 44 48 49 52 T 59 52" stroke="#f97316" stroke-width="1.5"/>
+  </g>
+  <circle cx="48" cy="42" r="2.5" fill="#ef4444"/>
+
+  <!-- Duodenum (Exit valve from stomach to intestines) -->
+  <path d="M63 50 C 70 48, 76 54, 75 62 C 73 70, 64 72, 57 72" 
+        stroke="#0284c7" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+
+  <!-- Intestinal Tract Loops (Small & Large Intestines below stomach) -->
+  <g stroke="#0369a1" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" opacity="0.85">
+    <!-- Intestine Winding Waves -->
+    <path d="M57 72 C 50 72, 44 74, 40 76 C 36 78, 36 82, 41 84 C 47 86, 57 84, 63 84 C 68 84, 70 88, 64 90 C 58 92, 42 92, 36 90"/>
+    <path d="M36 76 C 30 76, 26 80, 28 85 C 30 89, 34 90, 36 90"/>
   </g>
 
-  <!-- Microbiome / Probiotic Wellness Dots -->
-  <circle cx="28" cy="35" r="1.5" fill="#f59e0b"/>
-  <circle cx="49" cy="33" r="1.8" fill="#10b981"/>
-  <circle cx="34" cy="52" r="1.4" fill="#059669"/>
-  <circle cx="44" cy="37" r="1.2" fill="#34d399"/>
-  <circle cx="53" cy="50" r="1.3" fill="#f59e0b"/>
+  <!-- Healthy Gut Flora / Digestive Enzymes Indicators (Green & Amber) -->
+  <circle cx="34" cy="38" r="2" fill="#10b981"/>
+  <circle cx="67" cy="36" r="2" fill="#059669"/>
+  <circle cx="46" cy="80" r="1.8" fill="#f59e0b"/>
+  <circle cx="56" cy="88" r="1.6" fill="#10b981"/>
 </svg>
