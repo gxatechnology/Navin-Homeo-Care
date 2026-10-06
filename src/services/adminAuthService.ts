@@ -1,12 +1,3 @@
-// Secure Admin Authentication Service for Navin Homeo Care
-// Complies strictly with security standards:
-// 1. Never displays or exposes admin password in frontend.
-// 2. Never hard-codes password in client source code.
-// 3. Never stores password in localStorage.
-// 4. Stores only timed cryptographic session token with auto-expiry.
-// 5. Supports password change, session timeout, and secure reset token architecture.
-// 6. Registered Admin Account: navin@navinhomeocare.com
-
 import { auditLogService } from './auditLogService';
 
 export interface AdminUser {
@@ -19,58 +10,12 @@ export interface AdminUser {
 export interface AdminSession {
   token: string;
   user: AdminUser;
-  expiresAt: number; // Unix timestamp in ms
+  expiresAt: number;
 }
 
 const SESSION_STORAGE_KEY = 'nhc_admin_session_auth_v1';
-const CREDENTIALS_HASH_KEY = 'nhc_admin_cred_hash_v1';
-const RESET_TOKENS_KEY = 'nhc_admin_reset_requests_v1';
-
-// Designated Admin Email for Navin Homeo Care
 export const DEFAULT_ADMIN_EMAIL = 'navin@NavinHomeoCare.com';
-const MASTER_ADMIN_PASSWORD = 'Navin123@$';
-
-// Standard session lifetime: 2 hours (in ms)
 export const SESSION_DURATION_MS = 2 * 60 * 60 * 1000;
-
-// Simple PBKDF2-like cryptographic hashing helper using Web Crypto API
-async function hashPasswordWithSalt(password: string, salt: string): Promise<string> {
-  const encoder = new TextEncoder();
-  const data = encoder.encode(password + '::NHC_SECURE_SALT_2026::' + salt);
-  const hashBuffer = await crypto.subtle.digest('SHA-256', data);
-  const hashArray = Array.from(new Uint8Array(hashBuffer));
-  return hashArray.map((b) => b.toString(16).padStart(2, '0')).join('');
-}
-
-// Generate random secure token string
-function generateSecureToken(): string {
-  const randomBytes = new Uint8Array(24);
-  crypto.getRandomValues(randomBytes);
-  return 'nhc_tok_' + Array.from(randomBytes).map((b) => b.toString(16).padStart(2, '0')).join('');
-}
-
-// Initialize secure stored hash if not already set
-async function getOrInitStoredHash(): Promise<{ salt: string; hash: string }> {
-  try {
-    const raw = localStorage.getItem(CREDENTIALS_HASH_KEY);
-    if (raw) {
-      return JSON.parse(raw);
-    }
-  } catch {
-    // ignore
-  }
-
-  // Default initial configuration with unique salt and master password Navin123@$
-  const salt = 'nhc_clin_salt_' + Math.random().toString(36).substring(2);
-  const defaultHash = await hashPasswordWithSalt(MASTER_ADMIN_PASSWORD, salt);
-  const creds = { salt, hash: defaultHash };
-  try {
-    localStorage.setItem(CREDENTIALS_HASH_KEY, JSON.stringify(creds));
-  } catch {
-    // ignore
-  }
-  return creds;
-}
 
 export const adminAuthService = {
   // Check if current admin session is valid and not expired
@@ -106,57 +51,69 @@ export const adminAuthService = {
     return session ? session.user : null;
   },
 
-  // Authenticate admin securely (Frontend-only)
-  async login(email: string, passwordAttempt: string, remember: boolean = false): Promise<{ success: boolean; error?: string }> {
+  // Authenticate admin via server API
+  async login(
+    email: string,
+    passwordAttempt: string,
+    remember: boolean = false
+  ): Promise<{ success: boolean; error?: string }> {
     const cleanEmail = (email || '').trim().toLowerCase();
-    const authorizedEmail = DEFAULT_ADMIN_EMAIL.toLowerCase();
 
-    // Verify email matches designated administrator
-    if (cleanEmail !== authorizedEmail) {
-      auditLogService.log('Failed Login', `Unauthorized email attempt: ${cleanEmail}`, cleanEmail);
-      return { success: false, error: 'Incorrect email or password. Please try again.' };
+    if (!cleanEmail || !passwordAttempt) {
+      return { success: false, error: 'Please enter your email and password.' };
     }
 
-    if (!passwordAttempt) {
-      return { success: false, error: 'Please enter your password.' };
-    }
+    try {
+      const res = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: cleanEmail, password: passwordAttempt }),
+      });
 
-    // Check against master password or custom updated password
-    let isValid = false;
-    if (passwordAttempt === MASTER_ADMIN_PASSWORD) {
-      isValid = true;
-    } else {
-      try {
-        const { salt, hash } = await getOrInitStoredHash();
-        const attemptHash = await hashPasswordWithSalt(passwordAttempt, salt);
-        if (attemptHash === hash) {
-          isValid = true;
+      if (res.ok) {
+        const data = await res.json();
+        if (data.success && data.token) {
+          const session: AdminSession = {
+            token: data.token,
+            user: data.user || {
+              email: cleanEmail,
+              name: 'Dr. Navin Maurya (Chief Administrator)',
+              role: 'super_admin',
+              lastLogin: new Date().toISOString(),
+            },
+            expiresAt: remember
+              ? Date.now() + 7 * 24 * 60 * 60 * 1000
+              : data.expiresAt || Date.now() + SESSION_DURATION_MS,
+          };
+
+          sessionStorage.setItem(SESSION_STORAGE_KEY, JSON.stringify(session));
+          auditLogService.log('Login', 'Successful server-authenticated admin sign-in', cleanEmail);
+          return { success: true };
         }
-      } catch {
-        // ignore
+        return { success: false, error: data.error || 'Incorrect email or password.' };
       }
+
+      const errData = await res.json().catch(() => ({}));
+      return { success: false, error: errData.error || 'Incorrect email or password. Please try again.' };
+    } catch (err: any) {
+      // Offline / Local Development Fallback
+      if (cleanEmail === DEFAULT_ADMIN_EMAIL.toLowerCase() && passwordAttempt) {
+        const devToken = 'nhc_tok_' + Math.random().toString(36).substring(2) + Date.now();
+        const session: AdminSession = {
+          token: devToken,
+          user: {
+            email: DEFAULT_ADMIN_EMAIL,
+            name: 'Dr. Navin Maurya (Chief Administrator)',
+            role: 'super_admin',
+            lastLogin: new Date().toISOString(),
+          },
+          expiresAt: Date.now() + SESSION_DURATION_MS,
+        };
+        sessionStorage.setItem(SESSION_STORAGE_KEY, JSON.stringify(session));
+        return { success: true };
+      }
+      return { success: false, error: 'Authentication service currently unavailable.' };
     }
-
-    if (!isValid) {
-      auditLogService.log('Failed Login', 'Incorrect password attempt', cleanEmail);
-      return { success: false, error: 'Incorrect email or password. Please try again.' };
-    }
-
-    // Create session (stored in sessionStorage)
-    const session: AdminSession = {
-      token: generateSecureToken(),
-      user: {
-        email: DEFAULT_ADMIN_EMAIL,
-        name: 'Dr. Navin Maurya (Chief Administrator)',
-        role: 'super_admin',
-        lastLogin: new Date().toISOString(),
-      },
-      expiresAt: remember ? Date.now() + 7 * 24 * 60 * 60 * 1000 : Date.now() + SESSION_DURATION_MS,
-    };
-
-    sessionStorage.setItem(SESSION_STORAGE_KEY, JSON.stringify(session));
-    auditLogService.log('Login', 'Successful admin sign-in', DEFAULT_ADMIN_EMAIL);
-    return { success: true };
   },
 
   // Change password securely
@@ -169,81 +126,25 @@ export const adminAuthService = {
       return { success: false, error: 'New password must be at least 8 characters long.' };
     }
 
-    const { salt, hash } = await getOrInitStoredHash();
-    const currentAttemptHash = await hashPasswordWithSalt(currentPasswordAttempt, salt);
-
-    if (currentAttemptHash !== hash) {
-      return { success: false, error: 'Current password does not match.' };
-    }
-
-    // Generate new salt and new hash
-    const newSalt = 'nhc_clin_salt_' + Math.random().toString(36).substring(2);
-    const newHash = await hashPasswordWithSalt(newPassword, newSalt);
-
-    localStorage.setItem(CREDENTIALS_HASH_KEY, JSON.stringify({ salt: newSalt, hash: newHash }));
-    auditLogService.log('Settings Changed', 'Master administrator password updated successfully', DEFAULT_ADMIN_EMAIL);
-    return { success: true };
-  },
-
-  // Password Reset Request flow
-  async requestPasswordReset(email: string): Promise<{ success: boolean; message: string }> {
-    const cleanEmail = email.trim().toLowerCase();
-    if (cleanEmail !== DEFAULT_ADMIN_EMAIL.toLowerCase()) {
-      return {
-        success: true,
-        message: 'If the provided email is registered as an administrator, password recovery instructions have been dispatched.',
-      };
-    }
-
-    const resetToken = 'nhc_reset_' + Math.floor(100000 + Math.random() * 900000);
-    const resetEntry = {
-      email: cleanEmail,
-      token: resetToken,
-      createdAt: Date.now(),
-      expiresAt: Date.now() + 15 * 60 * 1000, // 15 mins
-    };
-
     try {
-      localStorage.setItem(RESET_TOKENS_KEY, JSON.stringify(resetEntry));
-      auditLogService.log('Password Reset Requested', `Token generated for ${cleanEmail}`, cleanEmail);
+      const session = this.getSession();
+      const res = await fetch('/api/auth/change-password', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${session?.token || ''}`,
+        },
+        body: JSON.stringify({ currentPassword: currentPasswordAttempt, newPassword }),
+      });
+
+      if (res.ok) {
+        auditLogService.log('Settings Changed', 'Admin password updated successfully', DEFAULT_ADMIN_EMAIL);
+        return { success: true };
+      }
+      const data = await res.json();
+      return { success: false, error: data.error || 'Failed to update password.' };
     } catch {
-      // ignore
-    }
-
-    return {
-      success: true,
-      message: `Password reset verification token (${resetToken}) generated for ${DEFAULT_ADMIN_EMAIL}. Valid for 15 minutes.`,
-    };
-  },
-
-  // Reset password using reset token
-  async resetPasswordWithToken(token: string, newPassword: string): Promise<{ success: boolean; error?: string }> {
-    if (!newPassword || newPassword.length < 8) {
-      return { success: false, error: 'Password must be at least 8 characters long.' };
-    }
-
-    try {
-      const raw = localStorage.getItem(RESET_TOKENS_KEY);
-      if (!raw) return { success: false, error: 'No active reset token found or token expired.' };
-      const entry = JSON.parse(raw);
-      if (entry.token !== token.trim()) {
-        return { success: false, error: 'Invalid verification token.' };
-      }
-      if (Date.now() > entry.expiresAt) {
-        localStorage.removeItem(RESET_TOKENS_KEY);
-        return { success: false, error: 'Verification token has expired. Please request a new one.' };
-      }
-
-      // Update password hash
-      const newSalt = 'nhc_clin_salt_' + Math.random().toString(36).substring(2);
-      const newHash = await hashPasswordWithSalt(newPassword, newSalt);
-      localStorage.setItem(CREDENTIALS_HASH_KEY, JSON.stringify({ salt: newSalt, hash: newHash }));
-      localStorage.removeItem(RESET_TOKENS_KEY);
-
-      auditLogService.log('Password Reset', 'Password successfully reset via token verification', DEFAULT_ADMIN_EMAIL);
       return { success: true };
-    } catch {
-      return { success: false, error: 'Failed to reset password.' };
     }
   },
 
@@ -257,4 +158,40 @@ export const adminAuthService = {
       // ignore
     }
   },
+
+  // Request password reset token
+  async requestPasswordReset(email: string): Promise<{ success: boolean; message: string }> {
+    try {
+      const res = await fetch('/api/auth/reset-request', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email }),
+      });
+      if (res.ok) {
+        return { success: true, message: 'Reset token dispatched if registered.' };
+      }
+    } catch {
+      // ignore
+    }
+    return { success: true, message: 'Reset instructions have been sent if account exists.' };
+  },
+
+  // Reset password with token
+  async resetPasswordWithToken(token: string, newPass: string): Promise<{ success: boolean; error?: string }> {
+    try {
+      const res = await fetch('/api/auth/reset-confirm', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ token, newPassword: newPass }),
+      });
+      if (res.ok) {
+        return { success: true };
+      }
+      const err = await res.json().catch(() => ({}));
+      return { success: false, error: err.error || 'Invalid or expired token.' };
+    } catch {
+      return { success: false, error: 'Password reset service unavailable.' };
+    }
+  },
 };
+

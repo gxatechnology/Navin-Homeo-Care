@@ -1,5 +1,6 @@
-import React, { useState, useMemo } from 'react';
-import { getActiveProducts, ProductItem, PRODUCT_CATEGORIES } from '../config/productsData';
+import React, { useState, useMemo, useEffect } from 'react';
+import { getActiveProducts, ProductItem, PRODUCT_CATEGORIES, isProductExpired } from '../config/productsData';
+import { adminDataService } from '../services/adminDataService';
 import { Link, useRouter } from '../context/RouterContext';
 import { useCart } from '../context/CartContext';
 import {
@@ -20,12 +21,44 @@ export const ShopPage: React.FC = () => {
   const { navigate } = useRouter();
   const { addToCart } = useCart();
 
+  const [productsList, setProductsList] = useState<ProductItem[]>(getActiveProducts());
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [priceFilter, setPriceFilter] = useState<'all' | 'under-200' | '200-350' | 'above-350'>('all');
   const [stockOnly, setStockOnly] = useState<boolean>(false);
   const [sortBy, setSortBy] = useState<'featured' | 'price-low' | 'price-high' | 'rating' | 'newest'>('featured');
   const [toastNotice, setToastNotice] = useState<{ message: string; type: 'success' | 'warn' } | null>(null);
+
+  // Cross-device live data synchronization
+  useEffect(() => {
+    let isMounted = true;
+    const loadLiveProducts = async () => {
+      try {
+        const res = await fetch('/api/products?publicOnly=true');
+        if (res.ok) {
+          const data = await res.json();
+          if (data.success && Array.isArray(data.products) && isMounted) {
+            setProductsList(data.products);
+          }
+        }
+      } catch {
+        // use initial fallback
+      }
+    };
+
+    loadLiveProducts();
+
+    const handleUpdate = (e: any) => {
+      if (isMounted) {
+        setProductsList(getActiveProducts());
+      }
+    };
+    window.addEventListener('nhc_products_updated', handleUpdate);
+    return () => {
+      isMounted = false;
+      window.removeEventListener('nhc_products_updated', handleUpdate);
+    };
+  }, []);
 
   const showToast = (message: string, type: 'success' | 'warn' = 'success') => {
     setToastNotice({ message, type });
@@ -36,6 +69,10 @@ export const ShopPage: React.FC = () => {
 
   const handleAddToCart = (product: ProductItem, e: React.MouseEvent) => {
     e.stopPropagation();
+    if (isProductExpired(product.expiryDate)) {
+      showToast('This product batch has expired and is unavailable.', 'warn');
+      return;
+    }
     if (product.stockQuantity <= 0) {
       showToast('This item is currently out of stock.', 'warn');
       return;
@@ -62,6 +99,10 @@ export const ShopPage: React.FC = () => {
 
   const handleBuyNow = (product: ProductItem, e: React.MouseEvent) => {
     e.stopPropagation();
+    if (isProductExpired(product.expiryDate)) {
+      showToast('This product batch has expired and is unavailable.', 'warn');
+      return;
+    }
     if (product.stockQuantity <= 0) {
       showToast('This item is currently out of stock.', 'warn');
       return;
@@ -83,10 +124,12 @@ export const ShopPage: React.FC = () => {
   };
 
   const filteredProducts = useMemo(() => {
-    return getActiveProducts().filter((item) => {
-      // Category filter
-      const matchesCategory =
-        selectedCategory === 'all' || item.category === selectedCategory;
+    return productsList
+      .filter((item) => item.active !== false)
+      .filter((item) => {
+        // Category filter
+        const matchesCategory =
+          selectedCategory === 'all' || item.category === selectedCategory;
 
       // Search query (name, shortDesc, category, ingredients)
       const q = searchQuery.toLowerCase().trim();
@@ -317,6 +360,7 @@ export const ShopPage: React.FC = () => {
             /* Product Cards Grid: 4 columns on large screens, 2 on tablets, 1 on small mobile */
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
               {filteredProducts.map((product) => {
+                const isExpired = isProductExpired(product.expiryDate);
                 const isOutOfStock = product.stockQuantity <= 0;
                 const isLowStock = product.stockQuantity > 0 && product.stockQuantity <= 5;
                 const discountAmount = product.mrp - product.price;
@@ -334,14 +378,22 @@ export const ShopPage: React.FC = () => {
                           src={product.image}
                           alt={product.name}
                           loading="lazy"
+                          onError={(e) => {
+                            (e.target as HTMLImageElement).src =
+                              'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?auto=format&fit=crop&w=800&q=80';
+                          }}
                           className={`w-full h-full object-cover group-hover:scale-105 transition-transform duration-300 ${
-                            isOutOfStock ? 'opacity-60 grayscale-50' : ''
+                            isOutOfStock || isExpired ? 'opacity-60 grayscale-50' : ''
                           }`}
                         />
 
                         {/* Badges Overlay */}
                         <div className="absolute top-3 left-3 flex flex-col gap-1.5 items-start">
-                          {isOutOfStock ? (
+                          {isExpired ? (
+                            <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-rose-700 text-white shadow-2xs">
+                              Batch Expired
+                            </span>
+                          ) : isOutOfStock ? (
                             <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-rose-600 text-white shadow-2xs">
                               Out of Stock
                             </span>
@@ -355,7 +407,7 @@ export const ShopPage: React.FC = () => {
                             </span>
                           )}
 
-                          {product.discountPercentage > 0 && !isOutOfStock && (
+                          {product.discountPercentage > 0 && !isOutOfStock && !isExpired && (
                             <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-600 text-white shadow-2xs">
                               {product.discountPercentage}% OFF
                             </span>
@@ -424,23 +476,23 @@ export const ShopPage: React.FC = () => {
                       {/* Action Buttons: Add to Cart & Buy Now */}
                       <div className="grid grid-cols-2 gap-2">
                         <button
-                          disabled={isOutOfStock}
+                          disabled={isOutOfStock || isExpired}
                           onClick={(e) => handleAddToCart(product, e)}
                           className={`w-full py-2 px-2.5 text-xs font-bold rounded-xl transition-all flex items-center justify-center gap-1 ${
-                            isOutOfStock
+                            isOutOfStock || isExpired
                               ? 'bg-slate-100 text-slate-400 cursor-not-allowed border border-slate-200'
                               : 'bg-white hover:bg-emerald-50 text-[#006e2d] border border-[#006e2d] cursor-pointer shadow-2xs'
                           }`}
                         >
                           <ShoppingCart className="w-3.5 h-3.5" />
-                          <span>Add</span>
+                          <span>{isExpired ? 'Expired' : 'Add'}</span>
                         </button>
 
                         <button
-                          disabled={isOutOfStock}
+                          disabled={isOutOfStock || isExpired}
                           onClick={(e) => handleBuyNow(product, e)}
                           className={`w-full py-2 px-2.5 text-xs font-bold rounded-xl transition-all flex items-center justify-center gap-1 ${
-                            isOutOfStock
+                            isOutOfStock || isExpired
                               ? 'bg-slate-200 text-slate-400 cursor-not-allowed'
                               : 'bg-[#006e2d] hover:bg-[#005320] text-white shadow-2xs cursor-pointer'
                           }`}

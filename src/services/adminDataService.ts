@@ -1,7 +1,30 @@
-import { ProductItem, PRODUCTS_DATA, ProductCategory } from '../config/productsData';
+import {
+  ProductItem,
+  PRODUCTS_DATA,
+  ProductCategory,
+  isProductExpired,
+  isProductExpiringSoon,
+  getProductStockStatus,
+} from '../config/productsData';
 import { CLINIC_CONFIG, ReviewItem, REVIEWS_DATA } from '../config/clinicData';
 import { Order, getStoredOrders, saveOrder, OrderStatus } from './orderService';
 import { auditLogService } from './auditLogService';
+import { adminAuthService } from './adminAuthService';
+
+export function getAdminAuthHeaders(): Record<string, string> {
+  const headers: Record<string, string> = {
+    'Content-Type': 'application/json',
+  };
+  try {
+    const session = adminAuthService.getSession();
+    if (session?.token) {
+      headers['Authorization'] = `Bearer ${session.token}`;
+    }
+  } catch {
+    // ignore
+  }
+  return headers;
+}
 
 // ==================== SECTION 13: DATABASE TABLES / STORAGE KEYS ====================
 export const DB_KEYS = {
@@ -154,6 +177,14 @@ export type InventoryChangeReason =
   | 'Order'
   | 'Cancellation'
   | 'Return'
+  | 'Purchase / New Batch Restock'
+  | 'Sale / Clinic Dispense'
+  | 'Inventory Count Correction'
+  | 'Damaged / Broken'
+  | 'Expired Stock Write-off'
+  | 'Doctor Sample / Demo'
+  | 'Initial Stock'
+  | 'Product Edit Adjustment'
   | string;
 
 export interface InventoryLogEntry {
@@ -164,6 +195,7 @@ export interface InventoryLogEntry {
   newStock: number;
   changeAmount: number;
   changeReason: InventoryChangeReason;
+  note?: string;
   timestamp: string;
   adminAccount: string;
 }
@@ -914,13 +946,146 @@ export const adminDataService = {
     }
   },
 
+  async fetchProductsFromApi(): Promise<ProductItem[]> {
+    if (typeof window === 'undefined') return this.getProducts();
+    try {
+      const res = await fetch('/api/products', {
+        headers: getAdminAuthHeaders(),
+      });
+      if (res.ok) {
+        const data = await res.json();
+        if (data.success && Array.isArray(data.products) && data.products.length > 0) {
+          localStorage.setItem(DB_KEYS.PRODUCTS, JSON.stringify(data.products));
+          window.dispatchEvent(new CustomEvent('nhc_products_updated', { detail: data.products }));
+          return data.products;
+        }
+      }
+    } catch (err) {
+      console.warn('Could not fetch products from /api/products:', err);
+    }
+    return this.getProducts();
+  },
+
   saveProducts(products: ProductItem[]): void {
     if (typeof window === 'undefined') return;
     try {
       localStorage.setItem(DB_KEYS.PRODUCTS, JSON.stringify(products));
+      window.dispatchEvent(new CustomEvent('nhc_products_updated', { detail: products }));
     } catch (err) {
       console.error('Failed to save products:', err);
     }
+  },
+
+  saveOrUpdateProduct(product: ProductItem): ProductItem {
+    const products = this.getProducts();
+    const index = products.findIndex((p) => p.id === product.id);
+    const isNew = index === -1;
+    const threshold = this.getSettings().lowStockThreshold || 10;
+    const stockStatus = getProductStockStatus(product.stockQuantity, threshold);
+    const nowIso = new Date().toISOString();
+
+    const normalizedProduct: ProductItem = {
+      ...product,
+      stockStatus,
+      updatedAt: nowIso,
+      createdAt: product.createdAt || nowIso,
+    };
+
+    if (isNew) {
+      products.unshift(normalizedProduct);
+      auditLogService.log('Product Created', `Added product "${normalizedProduct.name}" (SKU: ${normalizedProduct.sku})`);
+      fetch('/api/products', {
+        method: 'POST',
+        headers: getAdminAuthHeaders(),
+        body: JSON.stringify(normalizedProduct),
+      }).catch((err) => console.warn('API sync failed for product creation:', err));
+    } else {
+      products[index] = normalizedProduct;
+      auditLogService.log('Product Edited', `Updated product "${normalizedProduct.name}" (SKU: ${normalizedProduct.sku})`);
+      fetch(`/api/products/${normalizedProduct.id}`, {
+        method: 'PUT',
+        headers: getAdminAuthHeaders(),
+        body: JSON.stringify(normalizedProduct),
+      }).catch((err) => console.warn('API sync failed for product update:', err));
+    }
+
+    this.saveProducts(products);
+    return normalizedProduct;
+  },
+
+  adjustStock(
+    productId: string,
+    newStock: number,
+    changeReason: InventoryChangeReason = 'Manual Adjustment',
+    note?: string,
+    adminAccount: string = 'navin@navinhomeocare.com'
+  ): ProductItem | null {
+    const products = this.getProducts();
+    const index = products.findIndex((p) => p.id === productId);
+    if (index === -1) return null;
+
+    const prod = products[index];
+    const prevStock = prod.stockQuantity;
+    const clamped = Math.max(0, newStock);
+    const threshold = this.getSettings().lowStockThreshold || 10;
+    const stockStatus = getProductStockStatus(clamped, threshold);
+
+    prod.stockQuantity = clamped;
+    prod.stockStatus = stockStatus;
+    prod.updatedAt = new Date().toISOString();
+    products[index] = prod;
+    this.saveProducts(products);
+
+    const changeAmount = clamped - prevStock;
+    this.logInventoryChange(
+      productId,
+      prod.name,
+      prevStock,
+      clamped,
+      changeAmount,
+      changeReason,
+      note,
+      adminAccount
+    );
+
+    // Sync to API
+    fetch('/api/products/stock', {
+      method: 'POST',
+      headers: getAdminAuthHeaders(),
+      body: JSON.stringify({
+        productId,
+        newStock: clamped,
+        changeReason,
+        note,
+        adminAccount,
+      }),
+    }).catch((err) => console.warn('API stock sync failed:', err));
+
+    // Notifications
+    if (clamped === 0) {
+      this.addNotification({
+        type: 'out_of_stock',
+        title: 'Product Out of Stock',
+        message: `${prod.name} is now out of stock (0 units remaining).`,
+        targetPath: '/admin/products',
+        relatedId: productId,
+      });
+    } else if (clamped <= threshold && prevStock > threshold) {
+      this.addNotification({
+        type: 'low_stock',
+        title: 'Low Stock Alert',
+        message: `${prod.name} has fallen below safety threshold (${clamped} units left; threshold: ${threshold}).`,
+        targetPath: '/admin/products',
+        relatedId: productId,
+      });
+    }
+
+    auditLogService.log(
+      'Stock Adjusted',
+      `Product "${prod.name}" stock changed from ${prevStock} to ${clamped} (${changeReason}${note ? ' - ' + note : ''})`
+    );
+
+    return prod;
   },
 
   updateProductStock(
@@ -928,44 +1093,111 @@ export const adminDataService = {
     newStock: number,
     reason: InventoryChangeReason = 'Manual Adjustment'
   ): ProductItem | null {
+    return this.adjustStock(productId, newStock, reason);
+  },
+
+  toggleProductStatus(productId: string, field: 'active' | 'showOnShop' | 'featured'): ProductItem | null {
     const products = this.getProducts();
     const index = products.findIndex((p) => p.id === productId);
     if (index === -1) return null;
-    const previousStock = products[index].stockQuantity;
-    const clamped = Math.max(0, newStock);
-    const threshold = this.getSettings().lowStockThreshold || 10;
-    products[index].stockQuantity = clamped;
-    products[index].stockStatus = clamped === 0 ? 'out_of_stock' : clamped <= threshold ? 'low_stock' : 'in_stock';
+
+    const prod = products[index];
+    const currentVal = !!(prod as any)[field];
+    (prod as any)[field] = !currentVal;
+    prod.updatedAt = new Date().toISOString();
+    products[index] = prod;
     this.saveProducts(products);
 
-    // Record in inventory logs table
-    const changeAmount = clamped - previousStock;
-    this.logInventoryChange(productId, products[index].name, previousStock, clamped, changeAmount, reason);
+    fetch(`/api/products/${prod.id}`, {
+      method: 'PUT',
+      headers: getAdminAuthHeaders(),
+      body: JSON.stringify({ [field]: prod[field] }),
+    }).catch((err) => console.warn('API sync failed for toggle:', err));
 
-    // Trigger Notification for out of stock or low stock
-    if (clamped === 0) {
-      this.addNotification({
-        type: 'out_of_stock',
-        title: 'Product Out of Stock',
-        message: `${products[index].name} is now out of stock (0 units).`,
-        targetPath: '/admin/products',
-        relatedId: productId,
-      });
-    } else if (clamped <= threshold && previousStock > threshold) {
-      this.addNotification({
-        type: 'low_stock',
-        title: 'Low Stock Alert',
-        message: `${products[index].name} is low on stock (${clamped} units remaining; threshold is ${threshold}).`,
-        targetPath: '/admin/products',
-        relatedId: productId,
-      });
-    }
+    auditLogService.log('Product Status Toggled', `Toggled ${field} to ${prod[field]} for "${prod.name}"`);
+    return prod;
+  },
+
+  archiveProduct(productId: string, archived = true): ProductItem | null {
+    const products = this.getProducts();
+    const index = products.findIndex((p) => p.id === productId);
+    if (index === -1) return null;
+
+    const prod = products[index];
+    prod.archived = archived;
+    prod.updatedAt = new Date().toISOString();
+    products[index] = prod;
+    this.saveProducts(products);
+
+    fetch(`/api/products/${prod.id}`, {
+      method: 'PUT',
+      headers: getAdminAuthHeaders(),
+      body: JSON.stringify({ archived }),
+    }).catch((err) => console.warn('API sync failed for archive:', err));
 
     auditLogService.log(
-      'Stock Changed',
-      `Product "${products[index].name}" stock changed from ${previousStock} to ${clamped} (${reason})`
+      archived ? 'Product Archived' : 'Product Restored',
+      `Product "${prod.name}" was ${archived ? 'archived' : 'restored from archive'}`
     );
-    return products[index];
+    return prod;
+  },
+
+  duplicateProduct(productId: string): ProductItem | null {
+    const products = this.getProducts();
+    const orig = products.find((p) => p.id === productId);
+    if (!orig) return null;
+
+    const newId = `prod-${Date.now()}`;
+    const newSku = `NHC-SKU-${Math.floor(1000 + Math.random() * 9000)}`;
+    const newName = `${orig.name} (Copy)`;
+    const newSlug = `${orig.slug}-copy-${Math.floor(100 + Math.random() * 900)}`;
+
+    const copy: ProductItem = {
+      ...orig,
+      id: newId,
+      sku: newSku,
+      name: newName,
+      slug: newSlug,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    };
+
+    return this.saveOrUpdateProduct(copy);
+  },
+
+  deleteProduct(productId: string): { success: boolean; error?: string } {
+    const orders = this.getOrders();
+    const isReferencedInOrders = orders.some(
+      (o) => o.status !== 'cancelled' && o.items.some((item) => item.id === productId)
+    );
+
+    if (isReferencedInOrders) {
+      return {
+        success: false,
+        error:
+          'This product has existing order records and cannot be permanently deleted. You can Archive or Deactivate it instead to preserve sales audit history.',
+      };
+    }
+
+    const products = this.getProducts();
+    const target = products.find((p) => p.id === productId);
+    const filtered = products.filter((p) => p.id !== productId);
+    if (filtered.length === products.length) {
+      return { success: false, error: 'Product not found.' };
+    }
+
+    this.saveProducts(filtered);
+
+    fetch(`/api/products/${productId}`, {
+      method: 'DELETE',
+      headers: getAdminAuthHeaders(),
+    }).catch((err) => console.warn('API delete sync failed:', err));
+
+    auditLogService.log(
+      'Product Deleted',
+      `Permanently deleted product "${target?.name || productId}"`
+    );
+    return { success: true };
   },
 
   getInventoryLogs(): InventoryLogEntry[] {
@@ -982,13 +1214,34 @@ export const adminDataService = {
     }
   },
 
+  async fetchInventoryLogsFromApi(): Promise<InventoryLogEntry[]> {
+    if (typeof window === 'undefined') return this.getInventoryLogs();
+    try {
+      const res = await fetch('/api/inventory-logs', {
+        headers: getAdminAuthHeaders(),
+      });
+      if (res.ok) {
+        const data = await res.json();
+        if (data.success && Array.isArray(data.logs) && data.logs.length > 0) {
+          localStorage.setItem(DB_KEYS.INVENTORY_LOGS, JSON.stringify(data.logs));
+          return data.logs;
+        }
+      }
+    } catch (err) {
+      console.warn('Could not fetch inventory logs from /api/inventory-logs:', err);
+    }
+    return this.getInventoryLogs();
+  },
+
   logInventoryChange(
     productId: string,
     productName: string,
     previousStock: number,
     newStock: number,
     changeAmount: number,
-    changeReason: InventoryChangeReason
+    changeReason: InventoryChangeReason,
+    note?: string,
+    adminAccount: string = 'navin@navinhomeocare.com'
   ): void {
     if (typeof window === 'undefined') return;
     try {
@@ -1001,11 +1254,12 @@ export const adminDataService = {
         newStock,
         changeAmount,
         changeReason,
+        note: note || '',
         timestamp: new Date().toISOString(),
-        adminAccount: 'navin@navinhomeocare.com',
+        adminAccount,
       };
       logs.unshift(newEntry);
-      localStorage.setItem(DB_KEYS.INVENTORY_LOGS, JSON.stringify(logs.slice(0, 150)));
+      localStorage.setItem(DB_KEYS.INVENTORY_LOGS, JSON.stringify(logs.slice(0, 200)));
     } catch {
       // ignore
     }
@@ -1071,32 +1325,6 @@ export const adminDataService = {
 
   getUnreadNotificationCount(): number {
     return this.getNotifications().filter((n) => !n.read).length;
-  },
-
-  saveOrUpdateProduct(product: ProductItem): ProductItem {
-    const products = this.getProducts();
-    const index = products.findIndex((p) => p.id === product.id);
-    const isNew = index === -1;
-    if (isNew) {
-      products.unshift(product);
-      auditLogService.log('Product Created', `Added new product "${product.name}" (SKU: ${product.sku})`);
-    } else {
-      products[index] = product;
-      auditLogService.log('Product Edited', `Updated product "${product.name}" (SKU: ${product.sku})`);
-    }
-    this.saveProducts(products);
-    return product;
-  },
-
-  deleteProduct(productId: string): boolean {
-    const products = this.getProducts();
-    const target = products.find((p) => p.id === productId);
-    const filtered = products.filter((p) => p.id !== productId);
-    if (filtered.length === products.length) return false;
-    this.saveProducts(filtered);
-
-    auditLogService.log('Product Deleted', `Removed product "${target?.name || productId}" from inventory`);
-    return true;
   },
 
   // ==================== SECTION 4: PATIENT PRIVACY & CUSTOMER SEPARATION ====================
@@ -1484,9 +1712,22 @@ export const adminDataService = {
       0
     );
 
-    // Low Stock Products (based on threshold)
+    // Product Inventory KPIs
     const lowStockThreshold = this.getSettings().lowStockThreshold || 10;
-    const lowStockProducts = products.filter((p) => p.stockQuantity <= lowStockThreshold).length;
+    const activeProducts = products.filter((p) => p.archived !== true);
+    const lowStockProducts = activeProducts.filter(
+      (p) => p.stockQuantity <= lowStockThreshold && p.stockQuantity > 0
+    ).length;
+    const outOfStockProducts = activeProducts.filter((p) => p.stockQuantity === 0).length;
+    const expiringSoonProducts = activeProducts.filter(
+      (p) => p.expiryDate && isProductExpiringSoon(p.expiryDate, 90) && !isProductExpired(p.expiryDate)
+    ).length;
+    const expiredProducts = activeProducts.filter((p) => isProductExpired(p.expiryDate)).length;
+    const totalStockUnits = activeProducts.reduce((sum, p) => sum + p.stockQuantity, 0);
+    const totalInventoryValuation = activeProducts.reduce(
+      (sum, p) => sum + (p.costPrice || p.price) * p.stockQuantity,
+      0
+    );
 
     return {
       appointmentsToday,
@@ -1501,6 +1742,11 @@ export const adminDataService = {
       lifetimeStoreRevenue: rev.lifetimeNetRevenue,
       productsSold,
       lowStockProducts,
+      outOfStockProducts,
+      expiringSoonProducts,
+      expiredProducts,
+      totalStockUnits,
+      totalInventoryValuation,
       totalCustomers: customers.length,
       revenueBreakdown: rev,
     };

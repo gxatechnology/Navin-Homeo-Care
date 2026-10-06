@@ -1,0 +1,50 @@
+[
+  {
+    "id": "inv_1727500001",
+    "productId": "prod-01",
+    "productName": "Natural Calendula Soothing Skin Cream",
+    "previousStock": 14,
+    "newStock": 24,
+    "changeAmount": 10,
+    "changeReason": "Purchase / New Batch Restock",
+    "note": "Batch CAL-2026-B1 received from standard laboratory.",
+    "timestamp": "2026-09-25T11:30:00.000Z",
+    "adminAccount": "navin@navinhomeocare.com"
+  },
+  {
+    "id": "inv_1727500002",
+    "productId": "prod-02",
+    "productName": "Herbal Scalp & Hair Nourishing Oil",
+    "previousStock": 10,
+    "newStock": 18,
+    "changeAmount": 8,
+    "changeReason": "Purchase / New Batch Restock",
+    "note": "Autumn stock replenishment.",
+    "timestamp": "2026-09-24T14:15:00.000Z",
+    "adminAccount": "navin@navinhomeocare.com"
+  },
+  {
+    "id": "inv_1727500003",
+    "productId": "prod-03",
+    "productName": "Arnica Active Joint & Muscle Comfort Gel",
+    "previousStock": 8,
+    "newStock": 6,
+    "changeAmount": -2,
+    "changeReason": "Order",
+    "note": "Dispensed for verified OPD consultation order.",
+    "timestamp": "2026-09-26T09:45:00.000Z",
+    "adminAccount": "navin@navinhomeocare.com"
+  },
+  {
+    "id": "inv_1727500004",
+    "productId": "prod-08",
+    "productName": "Wintergreen & Eucalyptus Herbal Relief Balm",
+    "previousStock": 6,
+    "newStock": 4,
+    "changeAmount": -2,
+    "changeReason": "Order",
+    "note": "Order fulfilment.",
+    "timestamp": "2026-09-27T16:20:00.000Z",
+    "adminAccount": "navin@navinhomeocare.com"
+  }
+]

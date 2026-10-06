@@ -4,6 +4,9 @@ import fs from 'fs';
 import crypto from 'crypto';
 import dotenv from 'dotenv';
 import { fileURLToPath } from 'url';
+import { serverProductRepository, DatabaseConfigurationError } from './lib/server/productRepository';
+import { uploadProductImage, StorageConfigurationError } from './lib/server/storage';
+import { isServerRequestAuthenticated, createAdminSessionToken } from './lib/server/auth';
 
 dotenv.config();
 
@@ -14,52 +17,75 @@ const app = express();
 const PORT = parseInt(process.env.PORT || '3000', 10);
 const HOST = '0.0.0.0';
 
-app.use(express.json());
+app.use(express.json({ limit: '10mb' }));
 
 // Administrator Configuration
 const ADMIN_EMAIL = (process.env.ADMIN_EMAIL || 'navin@navinhomeocare.com').toLowerCase();
-const SESSION_SECRET = process.env.ADMIN_SESSION_SECRET || 'nhc_secure_session_secret_2026';
+const ADMIN_PASSWORD_HASH = process.env.ADMIN_PASSWORD_HASH || '';
+const INITIAL_ADMIN_PASSWORD = process.env.ADMIN_INITIAL_PASSWORD || 'Navin123@$';
 
-// Server-side credential store (never stored in plaintext)
-const salt = crypto.randomBytes(16).toString('hex');
-let storedPasswordHash = crypto
-  .createHash('sha256')
-  .update('Admin@Navin2026' + '::NHC_SECURE_SALT_2026::' + salt)
-  .digest('hex');
+// Verify Password
+function verifyAdminPassword(attempt: string): boolean {
+  if (!attempt) return false;
+  if (ADMIN_PASSWORD_HASH) {
+    const hash = crypto.createHash('sha256').update(attempt).digest('hex');
+    return hash === ADMIN_PASSWORD_HASH;
+  }
+  return attempt === INITIAL_ADMIN_PASSWORD;
+}
 
-const activeSessions = new Map<string, { email: string; expiresAt: number }>();
+// Authentication middleware
+function requireAdminAuth(req: express.Request, res: express.Response, next: express.NextFunction) {
+  if (isServerRequestAuthenticated(req)) {
+    return next();
+  }
+  return res.status(401).json({
+    success: false,
+    error: 'Unauthorized: Admin authentication session token required.',
+  });
+}
+
+// Production Database check middleware
+function requireDatabaseInProduction(req: express.Request, res: express.Response, next: express.NextFunction) {
+  try {
+    serverProductRepository.assertDatabaseConfigured();
+    next();
+  } catch (err: any) {
+    if (err instanceof DatabaseConfigurationError || err.name === 'DatabaseConfigurationError') {
+      return res.status(503).json({
+        success: false,
+        error: err.message,
+      });
+    }
+    next();
+  }
+}
 
 // ==================== AUTH API ROUTES ====================
 app.post('/api/auth/login', (req, res) => {
-  const { email, password } = req.body;
+  const { email, password } = req.body || {};
   if (!email || !password) {
     return res.status(400).json({ success: false, error: 'Email and password are required.' });
   }
 
-  const cleanEmail = email.trim().toLowerCase();
+  const cleanEmail = String(email).trim().toLowerCase();
   if (cleanEmail !== ADMIN_EMAIL) {
-    return res.status(401).json({ success: false, error: 'Unauthorized administrator email address.' });
-  }
-
-  const attemptHash = crypto
-    .createHash('sha256')
-    .update(password + '::NHC_SECURE_SALT_2026::' + salt)
-    .digest('hex');
-
-  if (attemptHash !== storedPasswordHash) {
     return res.status(401).json({ success: false, error: 'Incorrect email or password.' });
   }
 
-  const token = 'nhc_srv_' + crypto.randomBytes(24).toString('hex');
+  if (!verifyAdminPassword(password)) {
+    return res.status(401).json({ success: false, error: 'Incorrect email or password.' });
+  }
+
+  const token = createAdminSessionToken(cleanEmail);
   const expiresAt = Date.now() + 2 * 60 * 60 * 1000; // 2 hours
-  activeSessions.set(token, { email: cleanEmail, expiresAt });
 
   return res.json({
     success: true,
     token,
     user: {
       email: ADMIN_EMAIL,
-      name: 'Administrator (Dr. Navin Maurya Desk)',
+      name: 'Dr. Navin Maurya (Chief Administrator)',
       role: 'super_admin',
       lastLogin: new Date().toISOString(),
     },
@@ -68,55 +94,21 @@ app.post('/api/auth/login', (req, res) => {
 });
 
 app.get('/api/auth/verify', (req, res) => {
-  const authHeader = req.headers.authorization;
-  if (!authHeader || !authHeader.startsWith('Bearer ')) {
-    return res.status(401).json({ valid: false });
+  if (isServerRequestAuthenticated(req)) {
+    return res.json({ valid: true, user: { email: ADMIN_EMAIL, role: 'super_admin' } });
   }
-  const token = authHeader.replace('Bearer ', '').trim();
-  const session = activeSessions.get(token);
-  if (!session || Date.now() > session.expiresAt) {
-    if (session) activeSessions.delete(token);
-    return res.status(401).json({ valid: false });
-  }
-  return res.json({ valid: true, user: { email: session.email, role: 'super_admin' } });
+  return res.status(401).json({ valid: false });
 });
 
 app.post('/api/auth/logout', (req, res) => {
-  const authHeader = req.headers.authorization;
-  if (authHeader && authHeader.startsWith('Bearer ')) {
-    const token = authHeader.replace('Bearer ', '').trim();
-    activeSessions.delete(token);
-  }
   return res.json({ success: true });
-});
-
-app.post('/api/auth/change-password', (req, res) => {
-  const { currentPassword, newPassword } = req.body;
-  const attemptHash = crypto
-    .createHash('sha256')
-    .update(currentPassword + '::NHC_SECURE_SALT_2026::' + salt)
-    .digest('hex');
-
-  if (attemptHash !== storedPasswordHash) {
-    return res.status(400).json({ success: false, error: 'Current password does not match.' });
-  }
-
-  if (!newPassword || newPassword.length < 8) {
-    return res.status(400).json({ success: false, error: 'Password must be at least 8 characters long.' });
-  }
-
-  storedPasswordHash = crypto
-    .createHash('sha256')
-    .update(newPassword + '::NHC_SECURE_SALT_2026::' + salt)
-    .digest('hex');
-
-  return res.json({ success: true, message: 'Password updated successfully.' });
 });
 
 app.get('/api/health', (req, res) => {
   res.json({
     status: 'healthy',
     clinic: 'Navin Homeo Care',
+    database: serverProductRepository.isDatabaseConfigured() ? 'postgresql_connected' : 'local_development_mode',
     timestamp: new Date().toISOString(),
   });
 });
@@ -286,9 +278,210 @@ app.put('/api/appointments', (req, res) => {
   }
 });
 
+// ==================== PRODUCTS & INVENTORY API ROUTES ====================
+function sanitizePublicProduct(prod: any): any {
+  if (!prod) return prod;
+  const { costPrice, supplier, ...safeProduct } = prod;
+  return safeProduct;
+}
+
+// GET /api/products
+app.get('/api/products', requireDatabaseInProduction, async (req, res) => {
+  try {
+    const isAdmin = isServerRequestAuthenticated(req);
+    const { category, search, stockStatus, active, archived, publicOnly } = req.query;
+
+    const products = await serverProductRepository.getAllProducts({
+      publicOnly: !isAdmin || publicOnly === 'true',
+      category: typeof category === 'string' ? category : undefined,
+      stockStatus: typeof stockStatus === 'string' ? stockStatus : undefined,
+      search: typeof search === 'string' ? search : undefined,
+      active: isAdmin && active !== undefined ? active === 'true' : undefined,
+      archived: isAdmin && archived !== undefined ? archived === 'true' : undefined,
+    });
+
+    const sanitized = !isAdmin || publicOnly === 'true' ? products.map(sanitizePublicProduct) : products;
+    return res.json({ success: true, products: sanitized, count: sanitized.length });
+  } catch (err: any) {
+    if (err instanceof DatabaseConfigurationError || err.name === 'DatabaseConfigurationError') {
+      return res.status(503).json({ success: false, error: err.message });
+    }
+    return res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// GET /api/products/:id
+app.get('/api/products/:id', requireDatabaseInProduction, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const isAdmin = isServerRequestAuthenticated(req);
+    const found = await serverProductRepository.getProductById(id, !isAdmin);
+
+    if (!found) {
+      return res.status(404).json({ success: false, error: 'Product not found or unavailable.' });
+    }
+
+    const payload = !isAdmin ? sanitizePublicProduct(found) : found;
+    return res.json({ success: true, product: payload });
+  } catch (err: any) {
+    if (err instanceof DatabaseConfigurationError || err.name === 'DatabaseConfigurationError') {
+      return res.status(503).json({ success: false, error: err.message });
+    }
+    return res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// POST /api/products (Requires Admin Auth)
+app.post('/api/products', requireDatabaseInProduction, requireAdminAuth, async (req, res) => {
+  try {
+    const body = req.body || {};
+    if (!body.name || body.price === undefined) {
+      return res.status(400).json({ success: false, error: 'Product name and price are required.' });
+    }
+
+    const newProduct = await serverProductRepository.createProduct(body);
+    return res.status(201).json({
+      success: true,
+      message: 'Product created successfully in database.',
+      product: newProduct,
+    });
+  } catch (err: any) {
+    if (err instanceof DatabaseConfigurationError || err.name === 'DatabaseConfigurationError') {
+      return res.status(503).json({ success: false, error: err.message });
+    }
+    return res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// PUT /api/products/:id (Requires Admin Auth)
+app.put('/api/products/:id', requireDatabaseInProduction, requireAdminAuth, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const body = req.body || {};
+
+    const updated = await serverProductRepository.updateProduct(id, body);
+    if (!updated) {
+      return res.status(404).json({ success: false, error: 'Product not found.' });
+    }
+
+    return res.json({
+      success: true,
+      message: 'Product updated successfully in database.',
+      product: updated,
+    });
+  } catch (err: any) {
+    if (err instanceof DatabaseConfigurationError || err.name === 'DatabaseConfigurationError') {
+      return res.status(503).json({ success: false, error: err.message });
+    }
+    return res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// DELETE /api/products/:id (Requires Admin Auth)
+app.delete('/api/products/:id', requireDatabaseInProduction, requireAdminAuth, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const result = await serverProductRepository.deleteProduct(id);
+    if (!result.success) {
+      return res.status(400).json({ success: false, error: result.error });
+    }
+
+    return res.json({
+      success: true,
+      message: 'Product deleted successfully from database.',
+    });
+  } catch (err: any) {
+    if (err instanceof DatabaseConfigurationError || err.name === 'DatabaseConfigurationError') {
+      return res.status(503).json({ success: false, error: err.message });
+    }
+    return res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// POST /api/products/stock (Adjust stock atomically in database)
+app.post('/api/products/stock', requireDatabaseInProduction, requireAdminAuth, async (req, res) => {
+  try {
+    const { productId, newStock, changeReason, note, adminAccount } = req.body || {};
+    if (!productId || newStock === undefined) {
+      return res.status(400).json({ success: false, error: 'productId and newStock are required.' });
+    }
+
+    const result = await serverProductRepository.adjustStock(
+      productId,
+      Number(newStock),
+      changeReason || 'Manual Adjustment',
+      note,
+      adminAccount || 'navin@navinhomeocare.com'
+    );
+
+    if (!result) {
+      return res.status(404).json({ success: false, error: 'Product not found in database.' });
+    }
+
+    return res.json({
+      success: true,
+      message: 'Stock adjusted atomically in database.',
+      product: result.product,
+      log: result.log,
+    });
+  } catch (err: any) {
+    if (err instanceof DatabaseConfigurationError || err.name === 'DatabaseConfigurationError') {
+      return res.status(503).json({ success: false, error: err.message });
+    }
+    return res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// GET /api/products/inventory-logs & GET /api/inventory-logs
+const handleGetInventoryLogs = async (req: express.Request, res: express.Response) => {
+  try {
+    const { productId, reason } = req.query;
+    const logs = await serverProductRepository.getInventoryLogs({
+      productId: typeof productId === 'string' ? productId : undefined,
+      reason: typeof reason === 'string' ? reason : undefined,
+    });
+    return res.json({ success: true, logs, count: logs.length });
+  } catch (err: any) {
+    if (err instanceof DatabaseConfigurationError || err.name === 'DatabaseConfigurationError') {
+      return res.status(503).json({ success: false, error: err.message });
+    }
+    return res.status(500).json({ success: false, error: err.message });
+  }
+};
+
+app.get('/api/products/inventory-logs', requireDatabaseInProduction, requireAdminAuth, handleGetInventoryLogs);
+app.get('/api/inventory-logs', requireDatabaseInProduction, requireAdminAuth, handleGetInventoryLogs);
+
+// POST /api/upload (Direct Image Upload via Storage Provider)
+app.post('/api/upload', requireAdminAuth, async (req, res) => {
+  try {
+    const { dataUrl, fileName, base64 } = req.body || {};
+    const content = dataUrl || base64;
+
+    if (!content || typeof content !== 'string') {
+      return res.status(400).json({ success: false, error: 'No valid image data provided.' });
+    }
+
+    const result = await uploadProductImage(content, fileName);
+
+    return res.status(201).json({
+      success: true,
+      url: result.url,
+      key: result.key,
+      sizeBytes: result.sizeBytes,
+      provider: result.provider,
+      message: 'Product image uploaded successfully.',
+    });
+  } catch (err: any) {
+    if (err instanceof StorageConfigurationError || err.name === 'StorageConfigurationError') {
+      return res.status(503).json({ success: false, error: err.message });
+    }
+    return res.status(500).json({ success: false, error: err.message || 'Image upload failed.' });
+  }
+});
+
 // ==================== VITE MIDDLEWARE / STATIC ASSETS ====================
 async function startServer() {
-  // Always serve public directory for static assets like Navin.png
   app.use(express.static(path.resolve(__dirname, 'public')));
 
   const isProd = process.env.NODE_ENV === 'production' || fs.existsSync(path.resolve(__dirname, 'dist'));

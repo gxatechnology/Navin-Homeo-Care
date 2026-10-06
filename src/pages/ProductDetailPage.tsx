@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { getActiveProducts } from '../config/productsData';
+import React, { useState, useEffect } from 'react';
+import { getActiveProducts, isProductExpired, ProductItem } from '../config/productsData';
 import { Link, useRouter } from '../context/RouterContext';
 import { useCart } from '../context/CartContext';
 import {
@@ -28,8 +28,42 @@ export const ProductDetailPage: React.FC<Props> = ({ slug }) => {
   const [quantity, setQuantity] = useState(1);
   const [activeTab, setActiveTab] = useState<'overview' | 'usage' | 'composition' | 'shipping'>('overview');
   const [toastNotice, setToastNotice] = useState<{ message: string; type: 'success' | 'warn' } | null>(null);
+  const [product, setProduct] = useState<ProductItem | null>(() => {
+    return getActiveProducts().find((p) => p.slug === slug) || null;
+  });
+  const [loading, setLoading] = useState<boolean>(!product);
 
-  const product = getActiveProducts().find((p) => p.slug === slug);
+  useEffect(() => {
+    let isMounted = true;
+    const fetchProduct = async () => {
+      try {
+        const res = await fetch(`/api/products/${slug}`);
+        if (res.ok) {
+          const data = await res.json();
+          if (data && data.product && isMounted) {
+            setProduct(data.product);
+          }
+        }
+      } catch {
+        // Fallback to initial local lookup
+      } finally {
+        if (isMounted) setLoading(false);
+      }
+    };
+    fetchProduct();
+    return () => {
+      isMounted = false;
+    };
+  }, [slug]);
+
+  if (!product && loading) {
+    return (
+      <div className="min-h-[60vh] flex flex-col items-center justify-center p-6 text-center bg-slate-50">
+        <div className="w-8 h-8 border-3 border-emerald-500 border-t-transparent rounded-full animate-spin mb-3"></div>
+        <p className="text-slate-500 text-sm">Loading product details...</p>
+      </div>
+    );
+  }
 
   if (!product) {
     return (
@@ -51,6 +85,7 @@ export const ProductDetailPage: React.FC<Props> = ({ slug }) => {
   }
 
   const images = product.images && product.images.length > 0 ? product.images : [product.image];
+  const isExpired = isProductExpired(product.expiryDate);
   const isOutOfStock = product.stockQuantity <= 0;
   const isLowStock = product.stockQuantity > 0 && product.stockQuantity <= 5;
   const discountAmount = product.mrp - product.price;
@@ -61,6 +96,10 @@ export const ProductDetailPage: React.FC<Props> = ({ slug }) => {
   };
 
   const handleAddToCart = () => {
+    if (isExpired) {
+      showToast('This product batch has expired and cannot be ordered.', 'warn');
+      return;
+    }
     if (isOutOfStock) {
       showToast('This product is currently out of stock.', 'warn');
       return;
@@ -86,6 +125,10 @@ export const ProductDetailPage: React.FC<Props> = ({ slug }) => {
   };
 
   const handleBuyNow = () => {
+    if (isExpired) {
+      showToast('This product batch has expired and cannot be ordered.', 'warn');
+      return;
+    }
     if (isOutOfStock) {
       showToast('This product is currently out of stock.', 'warn');
       return;
@@ -176,29 +219,37 @@ export const ProductDetailPage: React.FC<Props> = ({ slug }) => {
                   <img
                     src={images[selectedImageIndex] || product.image}
                     alt={product.name}
+                    onError={(e) => {
+                      (e.target as HTMLImageElement).src =
+                        'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?auto=format&fit=crop&w=800&q=80';
+                    }}
                     className={`w-full h-full object-cover transition-opacity duration-200 ${
-                      isOutOfStock ? 'opacity-70 grayscale-50' : ''
+                      isOutOfStock || isExpired ? 'opacity-70 grayscale-50' : ''
                     }`}
                   />
 
-                  {/* Stock Status Badge */}
+                  {/* Stock / Expiry Status Badge */}
                   <span
                     className={`absolute top-4 left-4 text-xs font-bold px-3 py-1 rounded-full shadow-2xs backdrop-blur-xs ${
-                      isOutOfStock
+                      isExpired
+                        ? 'bg-rose-700 text-white'
+                        : isOutOfStock
                         ? 'bg-rose-600 text-white'
                         : isLowStock
                         ? 'bg-amber-600 text-white'
                         : 'bg-white/95 text-[#006e2d]'
                     }`}
                   >
-                    {isOutOfStock
+                    {isExpired
+                      ? 'Batch Expired'
+                      : isOutOfStock
                       ? 'Out of Stock'
                       : isLowStock
                       ? `Low Stock (${product.stockQuantity} remaining)`
                       : `In Stock (${product.stockQuantity} units available)`}
                   </span>
 
-                  {product.discountPercentage > 0 && (
+                  {product.discountPercentage > 0 && !isExpired && (
                     <span className="absolute top-4 right-4 text-xs font-bold px-3 py-1 rounded-full bg-emerald-600 text-white shadow-2xs">
                       {product.discountPercentage}% OFF
                     </span>
@@ -308,7 +359,17 @@ export const ProductDetailPage: React.FC<Props> = ({ slug }) => {
 
                 {/* Quantity and Action Buttons */}
                 <div className="pt-4 border-t border-slate-100 flex flex-col gap-4">
-                  {!isOutOfStock ? (
+                  {isExpired ? (
+                    <div className="p-3.5 bg-rose-50 rounded-xl border border-rose-200 text-rose-800 text-xs font-semibold flex items-start gap-2">
+                      <AlertCircle className="w-4 h-4 text-rose-600 shrink-0 mt-0.5" />
+                      <div>
+                        <strong className="block font-bold">Safety Notice: Batch Expired</strong>
+                        <span>
+                          This formulation batch has expired and cannot be ordered online. Please contact Dr. Navin Maurya or visit the OPD clinic for fresh batch prescriptions.
+                        </span>
+                      </div>
+                    </div>
+                  ) : !isOutOfStock ? (
                     <div className="flex items-center gap-4">
                       <span className="text-xs font-bold text-slate-700">Quantity:</span>
                       <div className="flex items-center border border-slate-200 rounded-xl overflow-hidden bg-slate-50">
@@ -349,23 +410,23 @@ export const ProductDetailPage: React.FC<Props> = ({ slug }) => {
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
                     <button
-                      disabled={isOutOfStock}
+                      disabled={isOutOfStock || isExpired}
                       onClick={handleAddToCart}
                       className={`py-3.5 px-6 rounded-xl border-2 text-xs font-bold uppercase tracking-wider transition-colors flex items-center justify-center gap-2 ${
-                        isOutOfStock
+                        isOutOfStock || isExpired
                           ? 'border-slate-200 text-slate-400 bg-slate-100 cursor-not-allowed'
                           : 'border-[#006e2d] text-[#006e2d] hover:bg-emerald-50 cursor-pointer'
                       }`}
                     >
                       <ShoppingCart className="w-4 h-4" />
-                      <span>Add to Cart</span>
+                      <span>{isExpired ? 'Batch Expired' : 'Add to Cart'}</span>
                     </button>
 
                     <button
-                      disabled={isOutOfStock}
+                      disabled={isOutOfStock || isExpired}
                       onClick={handleBuyNow}
                       className={`py-3.5 px-6 rounded-xl text-xs font-bold uppercase tracking-wider transition-all shadow-xs flex items-center justify-center gap-2 ${
-                        isOutOfStock
+                        isOutOfStock || isExpired
                           ? 'bg-slate-300 text-slate-500 cursor-not-allowed'
                           : 'bg-[#006e2d] hover:bg-[#005320] text-white cursor-pointer'
                       }`}
