@@ -1,0 +1,60 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 80" fill="none">
+  <defs>
+    <linearGradient id="wh-bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fdf2f8" stop-opacity="0.9"/>
+      <stop offset="100%" stop-color="#ecfdf5" stop-opacity="0.6"/>
+    </linearGradient>
+    <linearGradient id="wh-rose" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#db2777"/>
+      <stop offset="100%" stop-color="#be185d"/>
+    </linearGradient>
+    <linearGradient id="wh-emerald" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#059669"/>
+      <stop offset="100%" stop-color="#006e2d"/>
+    </linearGradient>
+    <filter id="wh-shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="2" stdDeviation="2.5" flood-color="#db2777" flood-opacity="0.18"/>
+    </filter>
+  </defs>
+
+  <!-- Container Aura -->
+  <rect width="80" height="80" rx="20" fill="url(#wh-bg)"/>
+
+  <!-- Delicate Female Wellness Vitality Ring (Background) -->
+  <circle cx="40" cy="40" r="28" stroke="#fbcfe8" stroke-width="1.2" stroke-dasharray="3 4" opacity="0.6"/>
+  <circle cx="40" cy="40" r="32" stroke="#d1fae5" stroke-width="1" stroke-dasharray="2 3" opacity="0.4"/>
+
+  <!-- Clinical Reproductive / Uterine Anatomy Silhouette (Clean Medical Stylization) -->
+  <g transform="translate(0, 4)">
+    <!-- Fallopian Tubes (Left & Right graceful arches) -->
+    <!-- Left Tube & Ovary -->
+    <path d="M40 32 C 32 30, 22 24, 18 29 C 14 34, 18 39, 23 37 C 26 36, 32 37, 35 42" 
+          stroke="url(#wh-emerald)" stroke-width="2" stroke-linecap="round" fill="none"/>
+    <circle cx="18" cy="33" r="3.5" fill="#fdf2f8" stroke="url(#wh-rose)" stroke-width="1.8"/>
+    <circle cx="18" cy="33" r="1.2" fill="#db2777"/>
+
+    <!-- Right Tube & Ovary -->
+    <path d="M40 32 C 48 30, 58 24, 62 29 C 66 34, 62 39, 57 37 C 54 36, 48 37, 45 42" 
+          stroke="url(#wh-emerald)" stroke-width="2" stroke-linecap="round" fill="none"/>
+    <circle cx="62" cy="33" r="3.5" fill="#fdf2f8" stroke="url(#wh-rose)" stroke-width="1.8"/>
+    <circle cx="62" cy="33" r="1.2" fill="#db2777"/>
+
+    <!-- Uterus / Fundus Central Anatomy -->
+    <path d="M33 30 C 37 28.5, 43 28.5, 47 30 C 51 34, 49 45, 44 54 C 42.5 57, 37.5 57, 36 54 C 31 45, 29 34, 33 30 Z" 
+          fill="#fff1f2" stroke="url(#wh-rose)" stroke-width="2.2" stroke-linejoin="round" filter="url(#wh-shadow)"/>
+
+    <!-- Endometrial / Hormonal Vitality Core (Lotus Blossom Center) -->
+    <path d="M40 36 C 37 40, 37 45, 40 48 C 43 45, 43 40, 40 36 Z" 
+          fill="#db2777" opacity="0.8"/>
+    <path d="M37 41 C 34 43, 35 46, 38 47" stroke="#059669" stroke-width="1.2" stroke-linecap="round"/>
+    <path d="M43 41 C 46 43, 45 46, 42 47" stroke="#059669" stroke-width="1.2" stroke-linecap="round"/>
+
+    <!-- Cervical Canal Base -->
+    <path d="M38 56 L 38 62 M 42 56 L 42 62" stroke="#be185d" stroke-width="1.8" stroke-linecap="round"/>
+  </g>
+
+  <!-- Soothing Wellness Sparkles -->
+  <circle cx="28" cy="19" r="1.5" fill="#db2777"/>
+  <circle cx="52" cy="19" r="1.5" fill="#059669"/>
+  <circle cx="40" cy="16" r="1.2" fill="#f43f5e"/>
+</svg>

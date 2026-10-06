@@ -2,6 +2,7 @@ import React from 'react';
 import { TREATMENTS_DATA, CLINIC_CONFIG } from '../config/clinicData';
 import { Link, useRouter } from '../context/RouterContext';
 import { AppointmentForm } from '../components/AppointmentForm';
+import { ConditionIllustration } from '../components/ConditionIllustration';
 import {
   Calendar,
   Phone,
@@ -33,7 +34,7 @@ export const TreatmentDetailPage: React.FC<Props> = ({ slug }) => {
         <h2 className="text-2xl font-bold text-slate-800 mb-2">Consultation Area Not Found</h2>
         <p className="text-slate-500 mb-6">The treatment consultation page you requested does not exist.</p>
         <Link
-          href="/treatments"
+          to="/treatments"
           className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-blue-900 text-white font-medium text-sm"
         >
           <ArrowLeft className="w-4 h-4" />
@@ -53,25 +54,34 @@ export const TreatmentDetailPage: React.FC<Props> = ({ slug }) => {
         <div className="max-w-7xl mx-auto">
           {/* Breadcrumb */}
           <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-emerald-400 mb-4">
-            <Link href="/" className="hover:text-white transition-colors">Home</Link>
+            <Link to="/" className="hover:text-white transition-colors">Home</Link>
             <span>/</span>
-            <Link href="/treatments" className="hover:text-white transition-colors">Treatments</Link>
+            <Link to="/treatments" className="hover:text-white transition-colors">Treatments</Link>
             <span>/</span>
             <span className="text-slate-300 truncate max-w-xs">{treatment.title}</span>
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
-            <div className="lg:col-span-8">
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 mb-3">
-                <Sparkles className="w-3.5 h-3.5" />
-                {treatment.categoryLabel}
-              </span>
-              <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-white mb-4">
-                {treatment.title}
-              </h1>
-              <p className="text-base sm:text-lg text-slate-300 leading-relaxed max-w-3xl">
-                {treatment.shortDesc}
-              </p>
+            <div className="lg:col-span-8 flex flex-col sm:flex-row items-start sm:items-center gap-5">
+              <ConditionIllustration
+                slug={treatment.slug}
+                title={treatment.title}
+                customImage={treatment.image || treatment.illustration}
+                size="lg"
+                className="bg-white/10 border-white/20 shadow-lg"
+              />
+              <div>
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 mb-2">
+                  <Sparkles className="w-3.5 h-3.5" />
+                  {treatment.categoryLabel}
+                </span>
+                <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight text-white mb-2">
+                  {treatment.title}
+                </h1>
+                <p className="text-sm sm:text-base text-slate-300 leading-relaxed max-w-2xl">
+                  {treatment.shortDesc}
+                </p>
+              </div>
             </div>
 
             <div className="lg:col-span-4 bg-white/5 border border-white/10 rounded-2xl p-5 backdrop-blur-md">
@@ -265,18 +275,30 @@ export const TreatmentDetailPage: React.FC<Props> = ({ slug }) => {
               <div
                 key={item.slug}
                 onClick={() => navigate(`/treatments/${item.slug}`)}
-                className="bg-white p-5 rounded-xl border border-slate-200/80 hover:border-blue-400 hover:shadow-xs transition-all cursor-pointer group"
+                className="bg-white p-5 rounded-2xl border border-slate-200/80 hover:border-emerald-400 hover:shadow-xs transition-all cursor-pointer group flex flex-col justify-between"
               >
-                <span className="text-[11px] font-semibold text-emerald-700 block mb-1">
-                  {item.categoryLabel}
-                </span>
-                <h4 className="text-sm font-bold text-slate-900 group-hover:text-blue-700 transition-colors mb-1">
-                  {item.title}
-                </h4>
-                <p className="text-xs text-slate-500 line-clamp-2 mb-3">
-                  {item.shortDesc}
-                </p>
-                <span className="text-xs font-semibold text-blue-700 inline-flex items-center gap-1">
+                <div>
+                  <div className="flex items-center gap-3 mb-3">
+                    <ConditionIllustration
+                      slug={item.slug}
+                      title={item.title}
+                      customImage={item.image || item.illustration}
+                      size="sm"
+                    />
+                    <div>
+                      <span className="text-[11px] font-semibold text-emerald-700 block">
+                        {item.categoryLabel}
+                      </span>
+                      <h4 className="text-sm font-bold text-slate-900 group-hover:text-emerald-700 transition-colors">
+                        {item.title}
+                      </h4>
+                    </div>
+                  </div>
+                  <p className="text-xs text-slate-500 line-clamp-2 mb-3">
+                    {item.shortDesc}
+                  </p>
+                </div>
+                <span className="text-xs font-semibold text-emerald-700 inline-flex items-center gap-1 group-hover:translate-x-0.5 transition-transform">
                   Read Details <ArrowRight className="w-3.5 h-3.5" />
                 </span>
               </div>

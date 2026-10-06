@@ -9,6 +9,8 @@ export interface TreatmentData {
   clinicalApproach: string;
   whoItHelps: string[];
   faqs?: { question: string; answer: string }[];
+  image?: string;
+  illustration?: string;
   // Backwards compatibility properties
   scopeNumber?: string;
   fullOverview?: string;
@@ -156,6 +158,7 @@ export const TREATMENTS_DATA: TreatmentData[] = [
     category: 'skin-hair',
     categoryLabel: 'Skin & Hair',
     scopeNumber: '01',
+    image: '/images/conditions/skin-and-hair.svg',
     shortDesc:
       'Consultation for acne, eczema, psoriasis, hair fall, dandruff and recurring skin concerns.',
     overview:
@@ -196,6 +199,7 @@ export const TREATMENTS_DATA: TreatmentData[] = [
     category: 'respiratory',
     categoryLabel: 'Allergy & Breathing',
     scopeNumber: '02',
+    image: '/images/conditions/allergy-and-respiratory.svg',
     shortDesc:
       'Consultation for sneezing, dust allergy, sinus problems, recurrent cough and breathing-related concerns.',
     overview:
@@ -232,6 +236,7 @@ export const TREATMENTS_DATA: TreatmentData[] = [
     category: 'digestive',
     categoryLabel: 'Digestive Health',
     scopeNumber: '03',
+    image: '/images/conditions/digestive-health.svg',
     shortDesc:
       'Consultation for acidity, gas, constipation, bloating and recurring digestive discomfort.',
     overview:
@@ -268,6 +273,7 @@ export const TREATMENTS_DATA: TreatmentData[] = [
     category: 'musculoskeletal',
     categoryLabel: 'Joint & Back Pain',
     scopeNumber: '04',
+    image: '/images/conditions/joint-and-musculoskeletal.svg',
     shortDesc:
       'Consultation for joint stiffness, knee discomfort, cervical pain, back pain and sciatica-related symptoms.',
     overview:
@@ -304,6 +310,7 @@ export const TREATMENTS_DATA: TreatmentData[] = [
     category: 'women-child',
     categoryLabel: "Women’s Health",
     scopeNumber: '05',
+    image: '/images/conditions/womens-health.svg',
     shortDesc:
       'Consultation for menstrual irregularities, PCOS-related concerns and other women’s health issues.',
     overview:
@@ -340,6 +347,7 @@ export const TREATMENTS_DATA: TreatmentData[] = [
     category: 'women-child',
     categoryLabel: 'Child Health',
     scopeNumber: '06',
+    image: '/images/conditions/child-health.svg',
     shortDesc:
       'Consultation for recurrent colds, appetite concerns and common childhood health issues.',
     overview:
@@ -376,6 +384,7 @@ export const TREATMENTS_DATA: TreatmentData[] = [
     category: 'chronic',
     categoryLabel: 'Chronic Health',
     scopeNumber: '07',
+    image: '/images/conditions/chronic-health.svg',
     shortDesc:
       'Consultation for persistent fatigue, chronic headaches, sleep disturbances and long-standing health concerns.',
     overview:
@@ -412,6 +421,7 @@ export const TREATMENTS_DATA: TreatmentData[] = [
     category: 'general',
     categoryLabel: 'General Health',
     scopeNumber: '08',
+    image: '/images/conditions/general-consultation.svg',
     shortDesc:
       'Consultation for general weakness, overall wellness, health checkups and second opinions.',
     overview:

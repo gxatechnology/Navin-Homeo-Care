@@ -1,0 +1,77 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 80" fill="none">
+  <defs>
+    <linearGradient id="jm-bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#eff6ff" stop-opacity="0.9"/>
+      <stop offset="100%" stop-color="#ecfdf5" stop-opacity="0.6"/>
+    </linearGradient>
+    <linearGradient id="jm-bone" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0284c7"/>
+      <stop offset="100%" stop-color="#0369a1"/>
+    </linearGradient>
+    <linearGradient id="jm-vertebra" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#059669"/>
+      <stop offset="100%" stop-color="#006e2d"/>
+    </linearGradient>
+    <linearGradient id="jm-pain-glow" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ef4444"/>
+      <stop offset="100%" stop-color="#f97316"/>
+    </linearGradient>
+    <filter id="jm-shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="2" stdDeviation="2" flood-color="#0369a1" flood-opacity="0.2"/>
+    </filter>
+  </defs>
+
+  <!-- Container Aura -->
+  <rect width="80" height="80" rx="20" fill="url(#jm-bg)"/>
+
+  <!-- Ergonomic Spinal S-Curve Guide Line (Background) -->
+  <path d="M30 14 Q 38 24 33 38 T 32 66" stroke="#cbd5e1" stroke-width="1.2" stroke-dasharray="2 3" opacity="0.6"/>
+
+  <!-- Articulated Vertebral Spine Column (Left / Center) -->
+  <g transform="translate(4, 0)">
+    <!-- Cervical Vertebra 1 -->
+    <rect x="23" y="14" width="14" height="5" rx="2.5" fill="#f8fafc" stroke="url(#jm-vertebra)" stroke-width="1.8"/>
+    <circle cx="30" cy="16.5" r="1.2" fill="#059669"/>
+    
+    <!-- Cervical Vertebra 2 -->
+    <rect x="24" y="21" width="15" height="5.5" rx="2.5" fill="#f8fafc" stroke="url(#jm-vertebra)" stroke-width="1.8"/>
+    <circle cx="31.5" cy="23.75" r="1.2" fill="#059669"/>
+
+    <!-- Thoracic Vertebra 3 -->
+    <rect x="23" y="28.5" width="16" height="6" rx="2.8" fill="#f8fafc" stroke="url(#jm-vertebra)" stroke-width="1.8"/>
+    <circle cx="31" cy="31.5" r="1.2" fill="#059669"/>
+
+    <!-- Lumbar Vertebra 4 (Active Care / Focused Region with gentle relief glow) -->
+    <rect x="20.5" y="36.5" width="18" height="6.5" rx="3" fill="#f0fdf4" stroke="url(#jm-pain-glow)" stroke-width="2.2" filter="url(#jm-shadow)"/>
+    <circle cx="29.5" cy="39.75" r="2" fill="#ef4444"/>
+
+    <!-- Lumbar Vertebra 5 -->
+    <rect x="20" y="45" width="18" height="6.5" rx="3" fill="#f8fafc" stroke="url(#jm-vertebra)" stroke-width="1.8"/>
+    <circle cx="29" cy="48.25" r="1.2" fill="#059669"/>
+
+    <!-- Sacrum Base Structure -->
+    <path d="M21 53.5 L 35 53.5 L 31 65 L 25 65 Z" fill="#f1f5f9" stroke="url(#jm-vertebra)" stroke-width="1.8" stroke-linejoin="round"/>
+    <line x1="28" y1="56" x2="28" y2="62" stroke="#059669" stroke-width="1.2"/>
+  </g>
+
+  <!-- Joint Articulation / Knee & Bone Anatomy Graphic (Right Side) -->
+  <g transform="translate(48, 18)">
+    <!-- Femur lower condyle -->
+    <path d="M6 4 C 6 8, 3 12, 5 16 C 7 19, 13 19, 15 16 C 17 12, 14 8, 14 4" 
+          stroke="url(#jm-bone)" stroke-width="2" stroke-linecap="round" fill="#f8fafc"/>
+
+    <!-- Synovial Joint Gap & Cartilage Cushion -->
+    <path d="M4 19 Q 10 21 16 19" stroke="#10b981" stroke-width="2.2" stroke-linecap="round"/>
+    
+    <!-- Tibia upper plateau -->
+    <path d="M5 22 C 3 26, 6 30, 6 34 M 15 22 C 17 26, 14 30, 14 34" 
+          stroke="url(#jm-bone)" stroke-width="2" stroke-linecap="round"/>
+
+    <!-- Therapeutic Alignment & Relief Rays -->
+    <circle cx="10" cy="19" r="4.5" stroke="#f59e0b" stroke-width="1.2" stroke-dasharray="2 2" opacity="0.8"/>
+    <circle cx="10" cy="19" r="1.5" fill="#f59e0b"/>
+  </g>
+
+  <!-- Flexibility & Mobility Arcs -->
+  <path d="M14 36 C 10 40, 10 46, 13 50" stroke="#059669" stroke-width="1.5" stroke-linecap="round" stroke-dasharray="2 2"/>
+</svg>
